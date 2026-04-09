@@ -6,7 +6,7 @@
     <title>Nollapohjabudjetoi</title>
     <meta
       name="description"
-      content="Rakenna Suomen budjetti kahdeksalla päätöksellä ja katso, millaisen suunnan valitsit."
+      content="Rakenna Suomen budjetti kymmenellä päätöksellä ja katso, millaisen suunnan valitsit kevään 2026 Suomi-tilannekuvassa."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260409-1" />
+    <link rel="stylesheet" href="styles.css?v=20260409-15" />
   </head>
   <body>
     <div class="page-ribbon page-ribbon-top" aria-hidden="true"></div>
@@ -23,27 +23,125 @@
         <div class="brand">
           <img
             class="brand-logo"
-            src="assets/liberaalipuolue-logo.png"
+            src="assets/liberaalipuolue-logo-header.png"
             alt="Liberaalipuolue"
           />
-          <div class="brand-copy">
-            <p class="eyebrow">Liberaalipuolueen budjettiprototyyppi</p>
-            <h1>Nollapohjabudjetoi</h1>
-            <p class="brand-tagline">Vapaus valita.</p>
-          </div>
         </div>
-        <p class="topbar-note">GitHub Pages -valmis kampanjasivu</p>
+        <div class="topbar-tabs" role="tablist" aria-label="Sivun näkymät">
+          <button
+            class="topbar-tab"
+            type="button"
+            role="tab"
+            data-view-toggle="game"
+            aria-selected="true"
+            aria-controls="app"
+          >
+            Peli
+          </button>
+          <button
+            class="topbar-tab"
+            type="button"
+            role="tab"
+            data-view-toggle="behind"
+            aria-selected="false"
+            aria-controls="behind-panel"
+          >
+            Mitä on pelin takana?
+          </button>
+        </div>
       </header>
 
-      <main id="app" class="app-frame" aria-live="polite"></main>
+      <main id="app" class="app-frame" aria-live="polite" role="tabpanel"></main>
 
-      <footer class="site-footer">
-        <span>liberaalipuolue.fi</span>
-        <span>Nollapohjabudjetoi</span>
-      </footer>
+      <section
+        id="behind-panel"
+        class="explain-panel"
+        hidden
+        role="tabpanel"
+        aria-labelledby="behind-title"
+      >
+        <div class="explain-header">
+          <p class="section-kicker">Mitä on pelin takana?</p>
+          <h2 id="behind-title" class="section-title">Miksi tämä peli näyttää tältä</h2>
+          <p class="section-copy">
+            Tämä peli ei yritä teeskennellä olevansa puolueeton budjettikone. Se on Liberaalipuolueen
+            kampanjamuotoinen tapa näyttää, miten Suomen talousvalintoja voisi katsoa yksilönvapauden,
+            taloudellisen toimeliaisuuden ja julkisen vallan priorisoinnin näkökulmasta.
+          </p>
+        </div>
+
+        <div class="explain-grid">
+          <article class="explain-card">
+            <h3>1. Liberaalien politiikan lähtökohta</h3>
+            <p class="tile-copy">
+              Liberaalipuolueen oma politiikka lähtee siitä, että ihmisillä pitää olla enemmän vapautta
+              päättää elämästään, tehdä työtä, yrittää, vaurastua ja valita itse. Samalla julkisen vallan
+              pitäisi keskittyä ydintehtäviinsä, suojata oikeuksia ja pitää huolta heikoimmista ilman että
+              koko yhteiskunta rakennetaan holhouksen, eturyhmäpolitiikan tai tarpeettoman sääntelyn varaan.
+            </p>
+            <ul class="explain-list">
+              <li><strong>Yksilönvapaudesta pidettävä kiinni.</strong> Peli palkitsee ratkaisuja, jotka lisäävät ihmisten omaa päätösvaltaa.</li>
+              <li><strong>Vapaus valita.</strong> Valinnoissa näkyy ajatus siitä, että kansalaisen ei tarvitse aina odottaa valtiota ratkaisemaan kaikkea.</li>
+              <li><strong>Elinkeinovapaus ja vähäinen byrokratia.</strong> Sääntelyn keventäminen, kilpailu ja helpompi yrittäminen näkyvät yrittäjien vapauden mittarissa.</li>
+              <li><strong>Alhaisempi verotus.</strong> Työn ja yrittämisen verotuksen keventäminen on pelissä tietoisesti vahva mutta usein kivulias valinta.</li>
+              <li><strong>Järkiperäinen avoin päätöksenteko.</strong> Peli nojaa siihen, että poliittisia ratkaisuja voi verrata vaikutusten eikä pelkkien iskulauseiden kautta.</li>
+              <li><strong>Heikko-osaisista täytyy pitää huolta.</strong> Liberaali pisteytys ei tule ilmaiseksi, mutta heikoimmista pidetään aina huolta ja siksi esimerkiksi kannatamme sosiaaliturvan reformia.</li>
+            </ul>
+            <p class="source-line">
+              Lähdepohja:
+              <a href="https://liberaalipuolue.fi/" target="_blank" rel="noreferrer">Liberaalipuolueen etusivu</a>
+              ja
+              <a href="https://liberaalipuolue.fi/puolueohjelma/" target="_blank" rel="noreferrer">puolueohjelma</a>.
+            </p>
+          </article>
+
+          <article class="explain-card">
+            <h3>2. Tausta-aineistot ja mallinnus</h3>
+            <p class="tile-copy">
+              Pelin taustamalli rakennettiin siksi, että Suomen kevään 2026 tilanne ei ole vain yksi
+              velkakeskustelu. Viralliset lähteet osoittavat samaan aikaan velka- ja alijäämäpaineen,
+              julkisten palveluiden heikentyvän saatavuuden, heikon kasvun, osaajapulan, turvallisuusmenojen
+              nousun ja alueellisen eriytymisen. Siksi peliä ei mallinnettu pelkkänä eurojen plussa-miinus
+              -laskurina.
+            </p>
+            <ul class="explain-list">
+              <li><strong>Miksi mittareita on monta.</strong> Velka, kasvu, hyvinvointi, yrittäjien vapaus, turvallisuus, oikeus, koulutus, huoltovarmuus ja alueellinen elinvoima vetävät oikeassa politiikassa eri suuntiin.</li>
+              <li><strong>Miksi vaikutuksissa on viiveitä.</strong> Säästöt, investoinnit ja rakenneuudistukset eivät toteudu heti, joten pelissä osa vaikutuksista näkyy vasta myöhemmin.</li>
+              <li><strong>Miksi kaikki valinnat sattuvat johonkin.</strong> Suomen todellinen budjettikeskustelu on täynnä ristiriitoja: velkaa halutaan alas, mutta palveluita ei haluta romuttaa eikä kasvua tukahduttaa.</li>
+              <li><strong>Miksi pelissä on avoin laskentamalli.</strong> Näkyvien mittareiden alla peli seuraa myös fiskaalista liikkumatilaa, palvelukykyä, kasvupotentiaalia, toimeenpanokykyä ja reformipainetta. Malli on tietenkin yksinkertaistus, mutta se on avoin ja sen perusteista voidaan käydä keskustelua.</li>
+              <li><strong>Miksi tämä on silti yksinkertaistus.</strong> Tavoite ei ole simuloida koko valtion budjettia täydellisesti, vaan tehdä 5–10 minuutin peli, joka näyttää aidot poliittiset jännitteet ymmärrettävässä muodossa.</li>
+            </ul>
+            <p class="tile-copy">
+              Taustaa varten käytettiin erityisesti VM:n budjettiaineistoja, Tilastokeskuksen velka- ja
+              kansantaloustietoja, VTV:n havaintoja finanssipolitiikasta, Talouspolitiikan arviointineuvoston
+              raporttia sekä IMF:n, OECD:n ja Euroopan komission Suomi-arvioita.
+            </p>
+            <ul class="source-list">
+              <li><a href="https://budjetti.vm.fi/" target="_blank" rel="noreferrer">Valtiovarainministeriö: budjettiaineistot</a></li>
+              <li><a href="https://stat.fi/" target="_blank" rel="noreferrer">Tilastokeskus: velka, BKT ja julkinen talous</a></li>
+              <li><a href="https://vtv.fi/raportti/finanssipolitiikan-valvonnan-raportti-2025/" target="_blank" rel="noreferrer">VTV: finanssipolitiikan valvonnan raportti 2025</a></li>
+              <li><a href="https://talouspolitiikanarviointineuvosto.fi/raportit/vuosiraportit/raportti-2025/" target="_blank" rel="noreferrer">Talouspolitiikan arviointineuvosto: raportti 2025</a></li>
+              <li><a href="https://www.imf.org/en/news/articles/2025/01/17/pr25005-finland-imf-executive-board-concludes-2025-article-iv-consultation" target="_blank" rel="noreferrer">IMF: Finland Article IV Consultation</a></li>
+              <li><a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/05/oecd-economic-surveys-finland-2025_121193f2/985d0555-en.pdf" target="_blank" rel="noreferrer">OECD: Economic Surveys Finland 2025</a></li>
+              <li><a href="https://www.oecd.org/en/publications/education-at-a-glance-2025_1a3543e2-en/finland_d8f44a5b-en.html" target="_blank" rel="noreferrer">OECD: Education at a Glance 2025, Finland</a></li>
+              <li><a href="https://economy-finance.ec.europa.eu/economic-surveillance-eu-member-states/country-pages/country-report-finland_en" target="_blank" rel="noreferrer">Euroopan komissio: Country Report Finland</a></li>
+            </ul>
+          </article>
+        </div>
+
+        <article class="explain-card explain-card-wide">
+          <h3>3. Avoin laskenta</h3>
+          <p class="tile-copy">
+            Alla on koko pelin laskenta siinä muodossa kuin tämä prototyyppi sitä käyttää:
+            lähtöarvot, kierroslogiikka, näkyvien mittareiden kaavat, taustalukujen kaavat
+            sekä kaikkien 10 kysymyksen kaikkien vaihtoehtojen vaikutukset.
+          </p>
+          <div id="open-model"></div>
+        </article>
+      </section>
     </div>
     <div class="page-ribbon page-ribbon-bottom" aria-hidden="true"></div>
 
-    <script src="app.js?v=20260409-1"></script>
+    <script src="app.js?v=20260409-15"></script>
   </body>
 </html>
