@@ -21,6 +21,11 @@ const executiveSummaryItems = [
       "Työllisyys, investoinnit ja tuottavuus eivät riitä kantamaan menoja. Siksi työn, yrittämisen ja osaamisen kannusteilla on iso merkitys.",
   },
   {
+    title: "Teknologia jakaa mahdollisuudet ja riskit",
+    copy:
+      "Tekoäly ja automaatio voivat nostaa tuottavuutta nopeasti, mutta ilman osaamista, siirtymäturvaa ja luottamusta ne voivat myös kasvattaa eroja.",
+  },
+  {
     title: "Turvallisuus sitoo resursseja",
     copy:
       "Puolustus, rajat, energia ja huoltovarmuus vaativat pysyvästi enemmän huomiota kuin vielä muutama vuosi sitten.",
@@ -94,8 +99,14 @@ const hiddenBase = {
   fiscalSpace: 42,
   debtSustainability: 38,
   serviceCapacity: 50,
+  socialFloor: 52,
+  targetingQuality: 44,
   growthPotential: 43,
   entrepreneurClimate: 46,
+  technologyReadiness: 47,
+  transitionCapacity: 43,
+  publicSectorProductivity: 41,
+  digitalTrust: 48,
   externalSecurityCapacity: 59,
   internalSecurityCapacity: 55,
   justiceCapacity: 49,
@@ -106,14 +117,22 @@ const hiddenBase = {
   implementationCapacity: 57,
   budgetExecution: 62,
   reformPressure: 24,
+  roleClarity: 50,
+  priorityFit: 50,
 };
 
 const hiddenDimensionMeta = [
   { key: "fiscalSpace", label: "Fiskaalinen liikkumatila" },
   { key: "debtSustainability", label: "Velkakestävyys" },
   { key: "serviceCapacity", label: "Palvelukyky" },
+  { key: "socialFloor", label: "Heikoimpien turva" },
+  { key: "targetingQuality", label: "Kohdentamisen laatu" },
   { key: "growthPotential", label: "Kasvupotentiaali" },
   { key: "entrepreneurClimate", label: "Yrittämisen ilmasto" },
+  { key: "technologyReadiness", label: "Teknologinen valmius" },
+  { key: "transitionCapacity", label: "Siirtymäkyky" },
+  { key: "publicSectorProductivity", label: "Julkisen sektorin tuottavuus" },
+  { key: "digitalTrust", label: "Digitaalinen luottamus" },
   { key: "externalSecurityCapacity", label: "Ulkoisen turvallisuuden kapasiteetti" },
   { key: "internalSecurityCapacity", label: "Sisäisen turvallisuuden kapasiteetti" },
   { key: "justiceCapacity", label: "Oikeuslaitoksen kapasiteetti" },
@@ -124,6 +143,8 @@ const hiddenDimensionMeta = [
   { key: "implementationCapacity", label: "Toimeenpanokyky" },
   { key: "budgetExecution", label: "Budjetin toteutuvuus" },
   { key: "reformPressure", label: "Reformipaine" },
+  { key: "roleClarity", label: "Valtion roolin selkeys" },
+  { key: "priorityFit", label: "Prioriteettien johdonmukaisuus" },
 ];
 
 const hiddenLabelMap = Object.fromEntries(
@@ -134,7 +155,13 @@ const backgroundPressureMeta = [
   { key: "fiscalSpace", delta: -1.2 },
   { key: "debtSustainability", delta: -1.4 },
   { key: "serviceCapacity", delta: -0.8 },
+  { key: "socialFloor", delta: -0.4 },
+  { key: "targetingQuality", delta: -0.3 },
   { key: "growthPotential", delta: -0.2 },
+  { key: "technologyReadiness", delta: -0.3 },
+  { key: "transitionCapacity", delta: -0.4 },
+  { key: "publicSectorProductivity", delta: -0.3 },
+  { key: "digitalTrust", delta: -0.2 },
   { key: "externalSecurityCapacity", delta: -0.6 },
   { key: "internalSecurityCapacity", delta: -0.2 },
   { key: "justiceCapacity", delta: -0.4 },
@@ -144,6 +171,8 @@ const backgroundPressureMeta = [
   { key: "equity", delta: -0.7 },
   { key: "budgetExecution", delta: 1.2 },
   { key: "reformPressure", delta: -1.3 },
+  { key: "roleClarity", delta: -0.3 },
+  { key: "priorityFit", delta: -0.4 },
 ];
 
 const horizonMeta = [
@@ -174,8 +203,14 @@ const structuralRealisationShares = {
   fiscalSpace: { term: 0.65, postTerm: 0.35 },
   debtSustainability: { term: 0.45, postTerm: 0.55 },
   serviceCapacity: { term: 0.55, postTerm: 0.45 },
+  socialFloor: { term: 0.6, postTerm: 0.4 },
+  targetingQuality: { term: 0.55, postTerm: 0.45 },
   growthPotential: { term: 0.4, postTerm: 0.6 },
   entrepreneurClimate: { term: 0.6, postTerm: 0.4 },
+  technologyReadiness: { term: 0.45, postTerm: 0.55 },
+  transitionCapacity: { term: 0.6, postTerm: 0.4 },
+  publicSectorProductivity: { term: 0.5, postTerm: 0.5 },
+  digitalTrust: { term: 0.55, postTerm: 0.45 },
   externalSecurityCapacity: { term: 0.55, postTerm: 0.45 },
   internalSecurityCapacity: { term: 0.6, postTerm: 0.4 },
   justiceCapacity: { term: 0.6, postTerm: 0.4 },
@@ -193,25 +228,25 @@ const visibleMetricFormulaMeta = [
     key: "debt",
     label: "Velan kehitys",
     formula:
-      "round(fiscalSpace * 0.5 + debtSustainability * 0.5 + budgetExecution * 0.1 - reformPressure * 0.15)",
+      "round(fiscalSpace * 0.38 + debtSustainability * 0.33 + publicSectorProductivity * 0.08 + budgetExecution * 0.08 + priorityFit * 0.07 + roleClarity * 0.04 + growthPotential * 0.05 + technologyReadiness * 0.03 - max(0, reformPressure - implementationCapacity) * 0.18)",
   },
   {
     key: "growth",
     label: "Talouskasvu",
     formula:
-      "round(growthPotential * 0.45 + entrepreneurClimate * 0.25 + educationCapital * 0.15 + regionalVitality * 0.1 + resilienceCapacity * 0.05)",
+      "round(growthPotential * 0.34 + entrepreneurClimate * 0.2 + educationCapital * 0.12 + regionalVitality * 0.08 + resilienceCapacity * 0.04 + technologyReadiness * 0.12 + publicSectorProductivity * 0.05 + transitionCapacity * 0.05)",
   },
   {
     key: "wellbeing",
     label: "Kansalaisten hyvinvointi",
     formula:
-      "round(serviceCapacity * 0.35 + equity * 0.2 + educationCapital * 0.15 + internalSecurityCapacity * 0.1 + justiceCapacity * 0.1 + regionalVitality * 0.1)",
+      "round(serviceCapacity * 0.24 + equity * 0.16 + socialFloor * 0.18 + targetingQuality * 0.14 + educationCapital * 0.08 + internalSecurityCapacity * 0.06 + justiceCapacity * 0.05 + regionalVitality * 0.04 + transitionCapacity * 0.05)",
   },
   {
     key: "freedom",
     label: "Yrittäjien vapaus",
     formula:
-      "round(entrepreneurClimate * 0.7 + growthPotential * 0.15 + budgetExecution * 0.1 + implementationCapacity * 0.05)",
+      "round(entrepreneurClimate * 0.55 + growthPotential * 0.1 + budgetExecution * 0.08 + implementationCapacity * 0.04 + technologyReadiness * 0.1 + digitalTrust * 0.08 + targetingQuality * 0.05)",
   },
   {
     key: "externalSecurity",
@@ -226,22 +261,22 @@ const visibleMetricFormulaMeta = [
   {
     key: "justice",
     label: "Oikeuslaitos",
-    formula: "round(justiceCapacity * 0.75 + implementationCapacity * 0.15 + equity * 0.1)",
+    formula: "round(justiceCapacity * 0.68 + implementationCapacity * 0.12 + equity * 0.08 + digitalTrust * 0.12)",
   },
   {
     key: "education",
     label: "Koulutus",
-    formula: "round(educationCapital * 0.7 + growthPotential * 0.2 + regionalVitality * 0.1)",
+    formula: "round(educationCapital * 0.58 + growthPotential * 0.14 + regionalVitality * 0.08 + technologyReadiness * 0.1 + transitionCapacity * 0.1)",
   },
   {
     key: "resilience",
     label: "Huoltovarmuus",
-    formula: "round(resilienceCapacity * 0.65 + externalSecurityCapacity * 0.2 + budgetExecution * 0.15)",
+    formula: "round(resilienceCapacity * 0.55 + externalSecurityCapacity * 0.18 + publicSectorProductivity * 0.12 + budgetExecution * 0.15)",
   },
   {
     key: "regionalVitality",
     label: "Alueellinen elinvoima",
-    formula: "round(regionalVitality * 0.55 + serviceCapacity * 0.2 + growthPotential * 0.1 + educationCapital * 0.15)",
+    formula: "round(regionalVitality * 0.42 + serviceCapacity * 0.14 + growthPotential * 0.08 + educationCapital * 0.12 + socialFloor * 0.08 + targetingQuality * 0.08 + transitionCapacity * 0.08)",
   },
 ];
 
@@ -259,7 +294,12 @@ const modelReadoutFormulaMeta = [
   {
     id: "servicePressure",
     label: "Palvelut",
-    formula: "clamp(round(100 - serviceCapacity))",
+    formula: "clamp(round(100 - (serviceCapacity * 0.6 + socialFloor * 0.2 + targetingQuality * 0.1 + publicSectorProductivity * 0.1)))",
+  },
+  {
+    id: "governanceFit",
+    label: "Prioriteettien johdonmukaisuus",
+    formula: "clamp(round(roleClarity * 0.4 + priorityFit * 0.6))",
   },
 ];
 
@@ -284,6 +324,287 @@ function mergeHiddenImpacts(...effectSets) {
     ]),
   );
 }
+
+const maxSelectedPriorities = 4;
+const topPriorityCount = 2;
+
+const roleOptions = [
+  {
+    id: "producer-state",
+    title: "Tuottava valtio",
+    copy:
+      "Valtio tuottaa ja järjestää paljon itse. Palvelujen jatkuvuus on tärkeämpää kuin tuotantotavan joustavuus.",
+    hiddenLiberal: 1,
+    baseImpact: hiddenImpact({
+      serviceCapacity: 4,
+      socialFloor: 2,
+      equity: 1,
+      entrepreneurClimate: -3,
+      publicSectorProductivity: -1,
+      implementationCapacity: -1,
+      roleClarity: 4,
+    }),
+    supportWeights: {
+      serviceCapacity: 1.2,
+      socialFloor: 1,
+      equity: 0.8,
+      internalSecurityCapacity: 0.5,
+      justiceCapacity: 0.4,
+    },
+  },
+  {
+    id: "steering-state",
+    title: "Järjestävä valtio",
+    copy:
+      "Valtio vastaa palveluista ja oikeuksista, mutta voi käyttää eri tuotantotapoja, kilpailua ja tulosohjausta.",
+    hiddenLiberal: 7,
+    baseImpact: hiddenImpact({
+      serviceCapacity: 2,
+      targetingQuality: 2,
+      publicSectorProductivity: 2,
+      implementationCapacity: 2,
+      budgetExecution: 1,
+      roleClarity: 4,
+    }),
+    supportWeights: {
+      serviceCapacity: 0.8,
+      targetingQuality: 1,
+      publicSectorProductivity: 1,
+      budgetExecution: 0.8,
+      implementationCapacity: 0.8,
+      justiceCapacity: 0.4,
+    },
+  },
+  {
+    id: "guaranteeing-state",
+    title: "Takaava valtio",
+    copy:
+      "Valtio takaa perusturvan, oikeudet ja vähimmäistason, mutta ei pidä itse tuottaa kaikkea samalla tavalla kaikkialla.",
+    hiddenLiberal: 10,
+    baseImpact: hiddenImpact({
+      socialFloor: 4,
+      targetingQuality: 4,
+      equity: 3,
+      serviceCapacity: 1,
+      entrepreneurClimate: 1,
+      roleClarity: 4,
+    }),
+    supportWeights: {
+      socialFloor: 1.2,
+      targetingQuality: 1.2,
+      equity: 1,
+      serviceCapacity: 0.6,
+      entrepreneurClimate: 0.4,
+      digitalTrust: 0.4,
+    },
+  },
+  {
+    id: "enabling-state",
+    title: "Mahdollistava valtio",
+    copy:
+      "Valtio keskittyy ydintehtäviin, poistaa esteitä ja antaa enemmän tilaa ihmisille, yrityksille ja yhteisöille.",
+    hiddenLiberal: 18,
+    baseImpact: hiddenImpact({
+      entrepreneurClimate: 4,
+      growthPotential: 2,
+      publicSectorProductivity: 2,
+      technologyReadiness: 2,
+      serviceCapacity: -1,
+      equity: -1,
+      roleClarity: 4,
+    }),
+    supportWeights: {
+      entrepreneurClimate: 1.2,
+      growthPotential: 1,
+      publicSectorProductivity: 0.8,
+      technologyReadiness: 0.8,
+      fiscalSpace: 0.6,
+      debtSustainability: 0.6,
+    },
+  },
+];
+
+const priorityOptions = [
+  {
+    id: "fiscal-stability",
+    title: "Valtiontalouden vakaus",
+    copy: "Velka, alijäämä ja kriisinkestävä julkinen talous ovat politiikan tärkein reunaehto.",
+    hiddenLiberal: 4,
+    baseImpact: hiddenImpact({
+      fiscalSpace: 2,
+      debtSustainability: 3,
+      budgetExecution: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      fiscalSpace: 1.3,
+      debtSustainability: 1.3,
+      budgetExecution: 0.8,
+      publicSectorProductivity: 0.6,
+    },
+  },
+  {
+    id: "external-security",
+    title: "Ulkoinen turvallisuus ja puolustus",
+    copy: "Valtion ykköstehtävä on turvata maa, pelote ja varautuminen vaikeassa turvallisuusympäristössä.",
+    hiddenLiberal: 2,
+    baseImpact: hiddenImpact({
+      externalSecurityCapacity: 3,
+      resilienceCapacity: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      externalSecurityCapacity: 1.3,
+      resilienceCapacity: 1,
+      fiscalSpace: 0.3,
+    },
+  },
+  {
+    id: "rule-of-law",
+    title: "Sisäinen turvallisuus ja oikeusvaltio",
+    copy: "Poliisi, tuomioistuimet, rajat ja oikeusturva ovat valtion kovaa ydintä.",
+    hiddenLiberal: 3,
+    baseImpact: hiddenImpact({
+      internalSecurityCapacity: 2,
+      justiceCapacity: 2,
+      digitalTrust: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      internalSecurityCapacity: 1.1,
+      justiceCapacity: 1.1,
+      digitalTrust: 0.6,
+      serviceCapacity: 0.3,
+    },
+  },
+  {
+    id: "social-floor",
+    title: "Heikoimpien turva",
+    copy: "Valtion on pidettävä huolta siitä, että kukaan ei putoa turvaverkon läpi muutosten keskellä.",
+    hiddenLiberal: 2,
+    baseImpact: hiddenImpact({
+      socialFloor: 3,
+      targetingQuality: 3,
+      equity: 2,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      socialFloor: 1.3,
+      targetingQuality: 1.1,
+      equity: 1,
+      transitionCapacity: 0.5,
+    },
+  },
+  {
+    id: "service-access",
+    title: "Toimivat sote- ja peruspalvelut",
+    copy: "Arjen tärkein mittari on se, pääseekö ihminen palveluun ajoissa ja toimiiko perusarki.",
+    hiddenLiberal: 1,
+    baseImpact: hiddenImpact({
+      serviceCapacity: 3,
+      publicSectorProductivity: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      serviceCapacity: 1.2,
+      publicSectorProductivity: 0.7,
+      socialFloor: 0.6,
+      targetingQuality: 0.5,
+    },
+  },
+  {
+    id: "education-science",
+    title: "Koulutus, tiede ja osaaminen",
+    copy: "Valtio rakentaa pitkää kasvua osaamisella, tutkimuksella ja kyvyllä uudistua.",
+    hiddenLiberal: 3,
+    baseImpact: hiddenImpact({
+      educationCapital: 3,
+      technologyReadiness: 1,
+      growthPotential: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      educationCapital: 1.2,
+      technologyReadiness: 0.8,
+      growthPotential: 0.8,
+      transitionCapacity: 0.6,
+    },
+  },
+  {
+    id: "work-enterprise",
+    title: "Työ, yrittäminen ja investoinnit",
+    copy: "Valtion tärkeä tehtävä on varmistaa, että työnteko, yrittäminen ja investoinnit kannattavat Suomessa.",
+    hiddenLiberal: 5,
+    baseImpact: hiddenImpact({
+      entrepreneurClimate: 3,
+      growthPotential: 2,
+      technologyReadiness: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      entrepreneurClimate: 1.3,
+      growthPotential: 1.1,
+      technologyReadiness: 0.8,
+      publicSectorProductivity: 0.4,
+      regionalVitality: 0.4,
+    },
+  },
+  {
+    id: "resilience-infra",
+    title: "Huoltovarmuus, energia ja infra",
+    copy: "Valtion pitää pitää yhteiskunta käynnissä kriiseissäkin: energia, data, logistiikka ja infra ovat osa ydintä.",
+    hiddenLiberal: 3,
+    baseImpact: hiddenImpact({
+      resilienceCapacity: 3,
+      publicSectorProductivity: 1,
+      regionalVitality: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      resilienceCapacity: 1.2,
+      publicSectorProductivity: 0.7,
+      regionalVitality: 0.6,
+      externalSecurityCapacity: 0.4,
+    },
+  },
+  {
+    id: "regional-vitality",
+    title: "Alueellinen elinvoima koko Suomessa",
+    copy: "Valtion pitää huolehtia, ettei maa jakaudu pysyvästi menestyviin keskuksiin ja kuihtuviin alueisiin.",
+    hiddenLiberal: 1,
+    baseImpact: hiddenImpact({
+      regionalVitality: 3,
+      serviceCapacity: 1,
+      educationCapital: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      regionalVitality: 1.3,
+      serviceCapacity: 0.8,
+      educationCapital: 0.5,
+      socialFloor: 0.4,
+    },
+  },
+  {
+    id: "individual-freedom",
+    title: "Yksilönvapaus ja valinnanmahdollisuudet",
+    copy: "Valtion tehtävä ei ole ratkaista kaikkea itse, vaan myös antaa ihmisille enemmän valtaa päättää omasta elämästään.",
+    hiddenLiberal: 5,
+    baseImpact: hiddenImpact({
+      entrepreneurClimate: 2,
+      digitalTrust: 2,
+      targetingQuality: 1,
+      priorityFit: 2,
+    }),
+    supportWeights: {
+      entrepreneurClimate: 0.9,
+      digitalTrust: 1.1,
+      targetingQuality: 0.7,
+      technologyReadiness: 0.6,
+      equity: 0.4,
+    },
+  },
+];
 
 function splitStructuralImpact(structural) {
   const term = {};
@@ -469,10 +790,15 @@ const decisions = [
           budgetExecution: -2,
         }),
         structural: hiddenImpact({
+          fiscalSpace: 1,
+          debtSustainability: 2,
           growthPotential: 5,
           entrepreneurClimate: 3,
           equity: 1,
           regionalVitality: 1,
+          socialFloor: 1,
+          targetingQuality: 3,
+          publicSectorProductivity: 1,
         }),
         reformLoad: 3,
         hiddenLiberal: 8,
@@ -511,13 +837,16 @@ const decisions = [
           implementationCapacity: -2,
         }),
         structural: hiddenImpact({
-          fiscalSpace: 3,
-          debtSustainability: 4,
-          growthPotential: 9,
-          entrepreneurClimate: 6,
+          fiscalSpace: 4,
+          debtSustainability: 6,
+          growthPotential: 8,
+          entrepreneurClimate: 5,
           equity: 3,
           regionalVitality: 2,
           budgetExecution: 2,
+          socialFloor: 2,
+          targetingQuality: 4,
+          publicSectorProductivity: 1,
         }),
         reformLoad: 6,
         hiddenLiberal: 22,
@@ -1047,6 +1376,121 @@ const decisions = [
     ],
   },
   {
+    id: "ai-transition",
+    topic: "Tekoäly ja työ",
+    title: "Miten vastaat tekoälyn ja automaation murrokseen?",
+    summary:
+      "Tekoäly voi nostaa tuottavuutta nopeasti, mutta se voi myös siirtää työpaikkoja, keskittää hyötyjä ja muuttaa julkisten palvelujen tapaa toimia. Siksi kysymys ei ole vain teknologiasta, vaan siitä kuka kantaa muutoksen riskin ja kuka hyötyy siitä.",
+    framing:
+      "Mallissa tämä päätös vaikuttaa erityisesti kasvuun, yrittäjien vapauteen, hyvinvointiin, koulutukseen ja julkisen sektorin tuottavuuteen.",
+    situation:
+      "Tilastokeskuksen 27.11.2025 julkaisun mukaan 38 % suomalaisista yrityksistä käytti tekoälyteknologioita keväällä 2025. IMF:n 30.1.2026 Suomen maaraportin taustapaperi arvioi, että tekoäly voi hyödyttää suurta osaa Suomen työmarkkinoista, mutta samalla osa työstä ja työntekijöistä on merkittävässä siirtymäriskissä. Euroopan komission Digital Decade 2025 -maaraportti taas kuvaa Suomea EU:n kärkimaihin kuuluvaksi AI-valmiudessa.",
+    sources:
+      "Tilastokeskus 27.11.2025; IMF Selected Issues Paper Finland 30.1.2026; European Commission Digital Decade Finland 2025",
+    choices: [
+      {
+        id: "fast-adoption",
+        title: "Anna yritysten ja virastojen ottaa AI nopeasti käyttöön",
+        copy:
+          "Tuottavuus voi nousta nopeasti, mutta ilman siirtymäturvaa osa työntekijöistä ja alueista jää muutoksessa helpommin jälkeen.",
+        immediate: hiddenImpact({
+          entrepreneurClimate: 4,
+          technologyReadiness: 6,
+          publicSectorProductivity: 2,
+          digitalTrust: -3,
+          transitionCapacity: -4,
+          equity: -2,
+        }),
+        structural: hiddenImpact({
+          growthPotential: 9,
+          entrepreneurClimate: 4,
+          publicSectorProductivity: 4,
+          technologyReadiness: 4,
+          transitionCapacity: -1,
+          regionalVitality: -1,
+        }),
+        reformLoad: 3,
+        hiddenLiberal: 14,
+      },
+      {
+        id: "skills-safety",
+        title: "Panosta osaamiseen, uudelleenkoulutukseen ja turvalliseen käyttöönottoon",
+        copy:
+          "Muutos etenee hieman hitaammin ja maksaa nyt, mutta työmarkkinan siirtymä on hallitumpi ja hyväksyttävyys korkeampi.",
+        immediate: hiddenImpact({
+          fiscalSpace: -2,
+          debtSustainability: -2,
+          educationCapital: 2,
+          transitionCapacity: 5,
+          digitalTrust: 3,
+          technologyReadiness: 2,
+          equity: 1,
+        }),
+        structural: hiddenImpact({
+          growthPotential: 6,
+          technologyReadiness: 4,
+          transitionCapacity: 5,
+          publicSectorProductivity: 3,
+          educationCapital: 3,
+          equity: 1,
+        }),
+        reformLoad: 2,
+        hiddenLiberal: 10,
+      },
+      {
+        id: "regulate-cautiously",
+        title: "Sääntele varovaisesti ennen laajaa käyttöönottoa",
+        copy:
+          "Riskit ja väärinkäytökset voivat jäädä pienemmiksi, mutta myös tuottavuus- ja kasvuhyötyjä menetetään, jos käyttöönotto jää hitaaksi.",
+        immediate: hiddenImpact({
+          digitalTrust: 4,
+          socialFloor: 1,
+          technologyReadiness: -3,
+          entrepreneurClimate: -2,
+          publicSectorProductivity: -1,
+        }),
+        structural: hiddenImpact({
+          growthPotential: -3,
+          technologyReadiness: -4,
+          transitionCapacity: 1,
+          digitalTrust: 2,
+        }),
+        reformLoad: 1,
+        hiddenLiberal: 2,
+      },
+      {
+        id: "national-ai-reform",
+        title: "Tee kansallinen AI-reformi: nopea käyttöönotto, siirtymäturva ja julkisen sektorin tuottavuus",
+        copy:
+          "Laajin paketti yrittää ottaa teknologian hyödyt nopeasti käyttöön, mutta samalla pehmentää muutoksen kustannuksia ihmisille ja palveluille. Onnistuminen vaatii poikkeuksellisen hyvää johtamista.",
+        immediate: hiddenImpact({
+          fiscalSpace: -1,
+          debtSustainability: -1,
+          technologyReadiness: 4,
+          transitionCapacity: 3,
+          publicSectorProductivity: 3,
+          digitalTrust: -1,
+          budgetExecution: -4,
+          implementationCapacity: -2,
+        }),
+        structural: hiddenImpact({
+          fiscalSpace: 2,
+          debtSustainability: 4,
+          growthPotential: 10,
+          entrepreneurClimate: 4,
+          technologyReadiness: 7,
+          transitionCapacity: 6,
+          publicSectorProductivity: 8,
+          digitalTrust: 3,
+          serviceCapacity: 2,
+          equity: 1,
+        }),
+        reformLoad: 6,
+        hiddenLiberal: 20,
+      },
+    ],
+  },
+  {
     id: "justice-security",
     topic: "Poliisi ja oikeus",
     title: "Miten hoidat poliisin, syyttäjät ja tuomioistuimet?",
@@ -1356,10 +1800,18 @@ const decisions = [
   },
 ];
 
+const maxPriorityLiberalScore = [...priorityOptions]
+  .sort((left, right) => right.hiddenLiberal - left.hiddenLiberal)
+  .slice(0, maxSelectedPriorities)
+  .reduce((sum, priority) => sum + priority.hiddenLiberal, 0);
+
+const maxGovernanceLiberalScore =
+  Math.max(...roleOptions.map((role) => role.hiddenLiberal)) + maxPriorityLiberalScore;
+
 const maxLiberalScore = decisions.reduce(
   (sum, decision) => sum + Math.max(...decision.choices.map((choice) => choice.hiddenLiberal)),
   0,
-);
+) + maxGovernanceLiberalScore;
 
 decisions.forEach((decision) => {
   decision.choices.forEach((choice) => {
@@ -1367,10 +1819,127 @@ decisions.forEach((decision) => {
   });
 });
 
+function getRoleOption(roleId) {
+  return roleOptions.find((role) => role.id === roleId);
+}
+
+function getPriorityOption(priorityId) {
+  return priorityOptions.find((priority) => priority.id === priorityId);
+}
+
+function createEmptyGovernanceSelection() {
+  return {
+    roleId: "",
+    priorities: [],
+    topPriorities: [],
+  };
+}
+
+const priorityOrder = Object.fromEntries(priorityOptions.map((priority, index) => [priority.id, index]));
+
+function sortUnique(values = []) {
+  return [...new Set(values)].sort((left, right) => {
+    const leftOrder = priorityOrder[left];
+    const rightOrder = priorityOrder[right];
+
+    if (leftOrder !== undefined && rightOrder !== undefined) {
+      return leftOrder - rightOrder;
+    }
+
+    return `${left}`.localeCompare(`${right}`);
+  });
+}
+
+function normaliseGovernance(governance = {}) {
+  const priorities = sortUnique(governance.priorities).filter((priorityId) => getPriorityOption(priorityId));
+  const topPriorities = sortUnique(governance.topPriorities)
+    .filter((priorityId) => priorities.includes(priorityId))
+    .slice(0, topPriorityCount);
+
+  return {
+    roleId: getRoleOption(governance.roleId)?.id ?? "",
+    priorities: priorities.slice(0, maxSelectedPriorities),
+    topPriorities,
+  };
+}
+
+function isGovernanceComplete(governance = state.governance) {
+  const normalised = normaliseGovernance(governance);
+  return (
+    Boolean(normalised.roleId) &&
+    normalised.priorities.length === maxSelectedPriorities &&
+    normalised.topPriorities.length === topPriorityCount
+  );
+}
+
+function mergeSupportWeights(...weightSets) {
+  const merged = {};
+
+  weightSets.forEach((weights) => {
+    Object.entries(weights ?? {}).forEach(([key, value]) => {
+      merged[key] = (merged[key] ?? 0) + value;
+    });
+  });
+
+  return merged;
+}
+
+function scaleSupportWeights(weights = {}, factor = 1) {
+  return Object.fromEntries(
+    Object.entries(weights).map(([key, value]) => [key, value * factor]),
+  );
+}
+
+function getGovernanceContext(governance = state.governance) {
+  const selection = normaliseGovernance(governance);
+  const role = getRoleOption(selection.roleId);
+  const priorities = selection.priorities.map((priorityId) => getPriorityOption(priorityId));
+  const topPriorityIds = new Set(selection.topPriorities);
+
+  const setupImpact = mergeHiddenImpacts(
+    role?.baseImpact ?? hiddenImpact(),
+    ...priorities.map((priority) =>
+      hiddenImpact(
+        Object.fromEntries(
+          Object.entries(priority.baseImpact).map(([key, value]) => [
+            key,
+            topPriorityIds.has(priority.id) ? value : value * 0.65,
+          ]),
+        ),
+      ),
+    ),
+  );
+
+  const roleWeights = role?.supportWeights ?? {};
+  const priorityWeights = mergeSupportWeights(
+    ...priorities.map((priority) =>
+      scaleSupportWeights(
+        priority.supportWeights,
+        topPriorityIds.has(priority.id) ? 1 : 0.6,
+      ),
+    ),
+  );
+
+  const governanceLiberalScore =
+    (role?.hiddenLiberal ?? 0) +
+    priorities.reduce((sum, priority) => sum + (priority?.hiddenLiberal ?? 0), 0);
+
+  return {
+    selection,
+    role,
+    priorities,
+    setupImpact,
+    roleWeights,
+    priorityWeights,
+    governanceLiberalScore,
+  };
+}
+
 const state = {
   step: "home",
   currentDecisionIndex: 0,
   answers: {},
+  governance: createEmptyGovernanceSelection(),
 };
 
 const app = document.querySelector("#app");
@@ -1427,13 +1996,79 @@ function applyEffectSet(hidden, deltas, baseFactor, executionFactor, implementat
   }
 }
 
-function applyChoiceForHorizon(hidden, choice, horizonId) {
+function applyStaticImpact(hidden, deltas) {
+  hiddenKeys.forEach((key) => {
+    const delta = deltas[key] ?? 0;
+
+    if (!delta) {
+      return;
+    }
+
+    hidden[key] = clamp(hidden[key] + delta);
+  });
+}
+
+function applyGovernanceAlignment(hidden, deltas, governanceContext) {
+  const { roleWeights, priorityWeights } = governanceContext;
+  let rolePositive = 0;
+  let roleNegative = 0;
+  let priorityPositive = 0;
+  let priorityNegative = 0;
+
+  hiddenKeys.forEach((key) => {
+    const delta = deltas[key] ?? 0;
+    const roleWeight = roleWeights[key] ?? 0;
+    const priorityWeight = priorityWeights[key] ?? 0;
+
+    if (!delta || (!roleWeight && !priorityWeight)) {
+      return;
+    }
+
+    if (delta > 0) {
+      rolePositive += delta * roleWeight;
+      priorityPositive += delta * priorityWeight;
+      hidden[key] = clamp(hidden[key] + delta * (roleWeight * 0.05 + priorityWeight * 0.04));
+      return;
+    }
+
+    roleNegative += Math.abs(delta) * roleWeight;
+    priorityNegative += Math.abs(delta) * priorityWeight;
+    hidden[key] = clamp(hidden[key] + delta * (roleWeight * 0.03 + priorityWeight * 0.025));
+  });
+
+  hidden.roleClarity = clamp(hidden.roleClarity + rolePositive * 0.35 - roleNegative * 0.4);
+  hidden.priorityFit = clamp(hidden.priorityFit + priorityPositive * 0.3 - priorityNegative * 0.35);
+  hidden.budgetExecution = clamp(
+    hidden.budgetExecution +
+      rolePositive * 0.12 +
+      priorityPositive * 0.12 -
+      roleNegative * 0.14 -
+      priorityNegative * 0.16,
+  );
+  hidden.implementationCapacity = clamp(
+    hidden.implementationCapacity +
+      rolePositive * 0.06 +
+      priorityPositive * 0.08 -
+      roleNegative * 0.08 -
+      priorityNegative * 0.1,
+  );
+  hidden.reformPressure = clamp(
+    hidden.reformPressure -
+      rolePositive * 0.03 -
+      priorityPositive * 0.03 +
+      roleNegative * 0.06 +
+      priorityNegative * 0.08,
+  );
+}
+
+function applyChoiceForHorizon(hidden, choice, horizonId, governanceContext) {
   const executionFactor = 0.65 + hidden.budgetExecution / 200;
   const overload = Math.max(0, hidden.reformPressure - hidden.implementationCapacity);
   const implementationFactor = Math.max(0.5, 1 - overload / 90);
   const deltas = choice.horizonEffects?.[horizonId] ?? hiddenImpact();
 
   applyEffectSet(hidden, deltas, 1, executionFactor, implementationFactor);
+  applyGovernanceAlignment(hidden, deltas, governanceContext);
   hidden.reformPressure = clamp(hidden.reformPressure + (choice.reformLoad ?? 0));
 }
 
@@ -1444,40 +2079,56 @@ function applyBackgroundPressure(hidden, scale = 1) {
 }
 
 function deriveAbsoluteMetrics(hidden) {
+  const reformOverload = Math.max(0, hidden.reformPressure - hidden.implementationCapacity);
+
   return {
     debt: clamp(
       round(
-        hidden.fiscalSpace * 0.5 +
-          hidden.debtSustainability * 0.5 +
-          hidden.budgetExecution * 0.1 -
-          hidden.reformPressure * 0.15,
+        hidden.fiscalSpace * 0.38 +
+          hidden.debtSustainability * 0.33 +
+          hidden.publicSectorProductivity * 0.08 +
+          hidden.budgetExecution * 0.08 +
+          hidden.priorityFit * 0.07 +
+          hidden.roleClarity * 0.04 +
+          hidden.growthPotential * 0.05 +
+          hidden.technologyReadiness * 0.03 -
+          reformOverload * 0.18,
       ),
     ),
     growth: clamp(
       round(
-        hidden.growthPotential * 0.45 +
-          hidden.entrepreneurClimate * 0.25 +
-          hidden.educationCapital * 0.15 +
-          hidden.regionalVitality * 0.1 +
-          hidden.resilienceCapacity * 0.05,
+        hidden.growthPotential * 0.34 +
+          hidden.entrepreneurClimate * 0.2 +
+          hidden.educationCapital * 0.12 +
+          hidden.regionalVitality * 0.08 +
+          hidden.resilienceCapacity * 0.04 +
+          hidden.technologyReadiness * 0.12 +
+          hidden.publicSectorProductivity * 0.05 +
+          hidden.transitionCapacity * 0.05,
       ),
     ),
     wellbeing: clamp(
       round(
-        hidden.serviceCapacity * 0.35 +
-          hidden.equity * 0.2 +
-          hidden.educationCapital * 0.15 +
-          hidden.internalSecurityCapacity * 0.1 +
-          hidden.justiceCapacity * 0.1 +
-          hidden.regionalVitality * 0.1,
+        hidden.serviceCapacity * 0.24 +
+          hidden.equity * 0.16 +
+          hidden.socialFloor * 0.18 +
+          hidden.targetingQuality * 0.14 +
+          hidden.educationCapital * 0.08 +
+          hidden.internalSecurityCapacity * 0.06 +
+          hidden.justiceCapacity * 0.05 +
+          hidden.regionalVitality * 0.04 +
+          hidden.transitionCapacity * 0.05,
       ),
     ),
     freedom: clamp(
       round(
-        hidden.entrepreneurClimate * 0.7 +
-          hidden.growthPotential * 0.15 +
-          hidden.budgetExecution * 0.1 +
-          hidden.implementationCapacity * 0.05,
+        hidden.entrepreneurClimate * 0.55 +
+          hidden.growthPotential * 0.1 +
+          hidden.budgetExecution * 0.08 +
+          hidden.implementationCapacity * 0.04 +
+          hidden.technologyReadiness * 0.1 +
+          hidden.digitalTrust * 0.08 +
+          hidden.targetingQuality * 0.05,
       ),
     ),
     externalSecurity: clamp(
@@ -1492,31 +2143,38 @@ function deriveAbsoluteMetrics(hidden) {
     ),
     justice: clamp(
       round(
-        hidden.justiceCapacity * 0.75 +
-          hidden.implementationCapacity * 0.15 +
-          hidden.equity * 0.1,
+        hidden.justiceCapacity * 0.68 +
+          hidden.implementationCapacity * 0.12 +
+          hidden.equity * 0.08 +
+          hidden.digitalTrust * 0.12,
       ),
     ),
     education: clamp(
       round(
-        hidden.educationCapital * 0.7 +
-          hidden.growthPotential * 0.2 +
-          hidden.regionalVitality * 0.1,
+        hidden.educationCapital * 0.58 +
+          hidden.growthPotential * 0.14 +
+          hidden.regionalVitality * 0.08 +
+          hidden.technologyReadiness * 0.1 +
+          hidden.transitionCapacity * 0.1,
       ),
     ),
     resilience: clamp(
       round(
-        hidden.resilienceCapacity * 0.65 +
-          hidden.externalSecurityCapacity * 0.2 +
+        hidden.resilienceCapacity * 0.55 +
+          hidden.externalSecurityCapacity * 0.18 +
+          hidden.publicSectorProductivity * 0.12 +
           hidden.budgetExecution * 0.15,
       ),
     ),
     regionalVitality: clamp(
       round(
-        hidden.regionalVitality * 0.55 +
-          hidden.serviceCapacity * 0.2 +
-          hidden.growthPotential * 0.1 +
-          hidden.educationCapital * 0.15,
+        hidden.regionalVitality * 0.42 +
+          hidden.serviceCapacity * 0.14 +
+          hidden.growthPotential * 0.08 +
+          hidden.educationCapital * 0.12 +
+          hidden.socialFloor * 0.08 +
+          hidden.targetingQuality * 0.08 +
+          hidden.transitionCapacity * 0.08,
       ),
     ),
   };
@@ -1536,12 +2194,28 @@ function deriveAbsoluteModelReadout(hidden) {
       value: clamp(round(hidden.implementationCapacity - hidden.reformPressure + 50)),
       description: "Mitä enemmän vaikeita reformeja päällekkäin, sitä enemmän osa hyödyistä viivästyy tai haihtuu.",
     },
-  {
-    id: "servicePressure",
-    label: "Palvelut",
-    value: clamp(round(100 - hidden.serviceCapacity)),
-    description: "Yksinkertaistettu palvelujen suunta: paranevatko palvelut vai heikkenevätkö ne lähtötilanteeseen verrattuna.",
-  },
+    {
+      id: "servicePressure",
+      label: "Palvelut",
+      value: clamp(
+        round(
+          100 -
+            (hidden.serviceCapacity * 0.6 +
+              hidden.socialFloor * 0.2 +
+              hidden.targetingQuality * 0.1 +
+              hidden.publicSectorProductivity * 0.1),
+        ),
+      ),
+      description:
+        "Yksinkertaistettu palvelujen suunta: paranevatko palvelut vai heikkenevätkö ne lähtötilanteeseen verrattuna.",
+    },
+    {
+      id: "governanceFit",
+      label: "Prioriteettien johdonmukaisuus",
+      value: clamp(round(hidden.roleClarity * 0.4 + hidden.priorityFit * 0.6)),
+      description:
+        "Kertoo, kuinka hyvin myöhemmät budjettivalinnat vastaavat juuri valitsemaasi valtion roolia ja tärkeimpiä tehtäviä.",
+    },
   ];
 }
 
@@ -1586,12 +2260,17 @@ function getFirstUnansweredIndex(answers = state.answers) {
   return index === -1 ? 0 : index;
 }
 
-function calculateState(answers = state.answers) {
+function calculateState(answers = state.answers, governance = state.governance) {
+  const governanceContext = getGovernanceContext(governance);
   const hiddenByHorizon = Object.fromEntries(
     horizonMeta.map((horizon) => [horizon.id, { ...hiddenBase }]),
   );
   const completedChoices = [];
-  let hiddenLiberalScore = 0;
+  let hiddenLiberalScore = governanceContext.governanceLiberalScore;
+
+  horizonMeta.forEach((horizon) => {
+    applyStaticImpact(hiddenByHorizon[horizon.id], governanceContext.setupImpact);
+  });
 
   const answeredEntries = decisions
     .map((decision) => ({
@@ -1609,7 +2288,7 @@ function calculateState(answers = state.answers) {
 
     horizonMeta.forEach((horizon) => {
       const hidden = hiddenByHorizon[horizon.id];
-      applyChoiceForHorizon(hidden, choice, horizon.id);
+      applyChoiceForHorizon(hidden, choice, horizon.id, governanceContext);
       applyBackgroundPressure(hidden, horizon.pressureScale);
     });
 
@@ -1649,6 +2328,7 @@ function calculateState(answers = state.answers) {
     timeline,
     hiddenLiberalScore,
     completedChoices,
+    governanceContext,
   };
 }
 
@@ -1756,6 +2436,26 @@ function getReadoutMeaning(item) {
     return "Uudistusvaraa on poikkeuksellisen paljon. Uusia muutoksia mahtuisi vielä mukaan ilman suurta ylikuormaa.";
   }
 
+  if (id === "governanceFit") {
+    if (value <= -10) {
+      return "Budjettivalinnat ovat selvästi ristiriidassa valitsemasi valtion roolin ja prioriteettien kanssa. Paketti näyttää sisältäpäin hajanaiselta.";
+    }
+
+    if (value <= -3) {
+      return "Valitun roolin ja käytännön budjettiratkaisujen välillä on näkyvää jännitettä. Kaikki ei vedä samaan suuntaan.";
+    }
+
+    if (value < 3) {
+      return "Valtion rooli ja budjettiratkaisut ovat suunnilleen samassa suunnassa, mutta linja ei ole erityisen terävä.";
+    }
+
+    if (value < 10) {
+      return "Budjettivalinnat tukevat melko hyvin valitsemaasi valtion roolia ja tärkeimpiä tehtäviä.";
+    }
+
+    return "Paketissa on poikkeuksellisen selkeä punainen lanka: valtion tehtävät, prioriteetit ja budjettiratkaisut tukevat toisiaan.";
+  }
+
   if (value >= 10) {
     return "Palvelut paranisivat selvästi lähtötilanteeseen verrattuna. Jonot, henkilöstökuorma ja saatavuus näyttäisivät helpottuvan.";
   }
@@ -1823,10 +2523,11 @@ function getOutcomeMeaning(metricKey, value) {
   return "";
 }
 
-function getBudgetImpactAnalysis(metrics, modelReadout) {
+function getBudgetImpactAnalysis(metrics, modelReadout, governanceContext) {
   const budgetExecution = getReadoutValue(modelReadout, "budgetExecution");
   const reformCapacity = getReadoutValue(modelReadout, "reformCapacity");
   const servicePressure = getReadoutValue(modelReadout, "servicePressure");
+  const governanceFit = getReadoutValue(modelReadout, "governanceFit");
 
   let publicFinance;
   if (metrics.debt >= 10) {
@@ -1911,10 +2612,23 @@ function getBudgetImpactAnalysis(metrics, modelReadout) {
       "Toteutus näyttäisi keskivaikealta. Budjetti ei kaatuisi pelkkään hallinnolliseen kuormaan, mutta osa vaikutuksista riippuisi paljon siitä, miten hyvin uudistukset valmistellaan.";
   }
 
+  let governanceCopy;
+  if (governanceFit >= 6) {
+    governanceCopy =
+      "Budjettisi pysyy melko uskollisena sille valtion roolille ja niille ydintehtäville, jotka itse valitsit. Pelaajan ilmoittama suunta ja käytännön eurovalinnat tukevat toisiaan.";
+  } else if (governanceFit <= -6) {
+    governanceCopy =
+      "Budjettisi ajautuu ristiriitaan oman valtionäkemyksesi kanssa. Nostit tietyt tehtävät tärkeiksi, mutta eurot ja reformit vievät lopulta osin toiseen suuntaan.";
+  } else {
+    governanceCopy =
+      "Valtion rooli ja budjettivalinnat ovat osittain samassa suunnassa, mutta paketti jää jännitteiseksi. Osa prioriteeteista näkyy hyvin, osa taas jää toissijaisiksi.";
+  }
+
   return {
     publicFinance,
     growthAndEnterprise,
     societyAndServices,
+    governanceCopy,
     macroTitle,
     macroCopy,
     implementationCopy,
@@ -2164,6 +2878,22 @@ function renderHiddenEffectsList(deltas) {
   return `<ul class="muted-list open-model-list">${items.join("")}</ul>`;
 }
 
+function renderSupportWeightsList(weights = {}) {
+  const items = Object.entries(weights)
+    .filter(([, value]) => value !== 0)
+    .sort((left, right) => right[1] - left[1])
+    .map(
+      ([key, value]) =>
+        `<li><strong>${getHiddenLabel(key)}</strong>: painokerroin ${formatExactValue(value)}</li>`,
+    );
+
+  if (!items.length) {
+    return `<p class="tile-copy">Ei erillisiä kohdennuspainoja tässä valinnassa.</p>`;
+  }
+
+  return `<ul class="muted-list open-model-list">${items.join("")}</ul>`;
+}
+
 function renderBackgroundPressureList() {
   return `
     <ul class="muted-list open-model-list">
@@ -2177,44 +2907,70 @@ function renderBackgroundPressureList() {
   `;
 }
 
+function buildAnswersFromPattern(pattern = []) {
+  const answers = {};
+  decisions.forEach((decision, index) => {
+    const selectedChoice = decision.choices[pattern[index] - 1] ?? decision.choices[0];
+    answers[decision.id] = selectedChoice.id;
+  });
+  return answers;
+}
+
 function getPlayerProfileShowcase() {
   const profileExamples = [
     {
       range: "0-24 / 100",
-      pattern: [3, 3, 3, 3, 3, 2, 1, 2, 2, 3],
+      governance: {
+        roleId: "producer-state",
+        priorities: ["social-floor", "service-access", "regional-vitality", "rule-of-law"],
+        topPriorities: ["social-floor", "service-access"],
+      },
+      pattern: [3, 3, 3, 3, 3, 2, 1, 2, 2, 2, 3],
       angle:
         "Suojaa nykyisiä rakenteita ja palveluja enemmän kuin hakee kasvua tai laajaa markkinareformia.",
     },
     {
       range: "25-44 / 100",
-      pattern: [2, 2, 2, 2, 2, 1, 2, 2, 1, 2],
+      governance: {
+        roleId: "steering-state",
+        priorities: ["fiscal-stability", "service-access", "education-science", "rule-of-law"],
+        topPriorities: ["fiscal-stability", "service-access"],
+      },
+      pattern: [2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2],
       angle:
         "Tekee korjauksia useaan kohtaan, mutta varoo liian kovaa yhtäaikaista reformiaaltoa.",
     },
     {
       range: "45-69 / 100",
-      pattern: [3, 2, 4, 4, 3, 2, 4, 1, 1, 1],
+      governance: {
+        roleId: "guaranteeing-state",
+        priorities: ["social-floor", "work-enterprise", "education-science", "individual-freedom"],
+        topPriorities: ["social-floor", "work-enterprise"],
+      },
+      pattern: [2, 3, 4, 3, 3, 2, 4, 2, 4, 4, 4],
       angle:
         "Painottaa kasvua, veropohjan remonttia ja yritysmyönteisiä muutoksia, mutta rakenteelliset uudistukset jäävät hieman vaisuiksi.",
     },
     {
       range: "70-100 / 100",
-      pattern: [4, 2, 2, 4, 2, 1, 4, 1, 4, 4],
+      governance: {
+        roleId: "enabling-state",
+        priorities: ["fiscal-stability", "work-enterprise", "education-science", "individual-freedom"],
+        topPriorities: ["work-enterprise", "individual-freedom"],
+      },
+      pattern: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
       angle:
         "Nojaa vahvasti rakenteellisiin uudistuksiin, työn ja yrittämisen kannusteisiin sekä valtion roolin karsimiseen.",
     },
   ];
 
   return profileExamples.map((example) => {
-    const answers = {};
-    decisions.forEach((decision, index) => {
-      answers[decision.id] = decision.choices[example.pattern[index] - 1].id;
-    });
-
-    const result = calculateState(answers);
+    const answers = buildAnswersFromPattern(example.pattern);
+    const result = calculateState(answers, example.governance);
     const scorePercent = round((result.hiddenLiberalScore / maxLiberalScore) * 100);
     const profile = getLiberalProfile(scorePercent);
     const readout = Object.fromEntries(result.modelReadout.map((item) => [item.id, item.value]));
+    const governanceContext = getGovernanceContext(example.governance);
 
     return {
       ...example,
@@ -2223,6 +2979,7 @@ function getPlayerProfileShowcase() {
       copy: profile.copy,
       metrics: result.metrics,
       readout,
+      governanceContext,
     };
   });
 }
@@ -2257,21 +3014,29 @@ function renderPlayerProfiles() {
             .map(
               (profile) => `
                 <tr>
-                  <td>
+                  <td data-label="Profiili">
                     <strong>${profile.title}</strong>
                     <span class="profile-subline">Esimerkkitulos ${profile.scorePercent} / 100</span>
                   </td>
-                  <td><span class="profile-range">${profile.range}</span></td>
-                  <td>
+                  <td data-label="Pistealue"><span class="profile-range">${profile.range}</span></td>
+                  <td data-label="Kuvaus">
                     <p class="profile-copy">${profile.copy}</p>
                     <p class="profile-copy profile-copy-muted">${profile.angle}</p>
+                    <p class="profile-copy profile-copy-muted">
+                      <strong>Valtion rooli:</strong> ${profile.governanceContext.role?.title ?? "Ei valittu"}
+                    </p>
+                    <p class="profile-copy profile-copy-muted">
+                      <strong>Kärkiprioriteetit:</strong> ${profile.governanceContext.selection.topPriorities
+                        .map((priorityId) => getPriorityTitle(priorityId))
+                        .join(", ")}
+                    </p>
                   </td>
-                  <td><span class="profile-delta ${getDeltaClass(profile.metrics.debt)}">${formatSignedValue(profile.metrics.debt)}</span></td>
-                  <td><span class="profile-delta ${getDeltaClass(profile.metrics.growth)}">${formatSignedValue(profile.metrics.growth)}</span></td>
-                  <td><span class="profile-delta ${getDeltaClass(profile.metrics.wellbeing)}">${formatSignedValue(profile.metrics.wellbeing)}</span></td>
-                  <td><span class="profile-delta ${getDeltaClass(profile.metrics.freedom)}">${formatSignedValue(profile.metrics.freedom)}</span></td>
-                  <td><span class="profile-delta ${getDeltaClass(profile.readout.servicePressure)}">${formatSignedValue(profile.readout.servicePressure)}</span></td>
-                  <td><span class="profile-delta ${getDeltaClass(profile.readout.budgetExecution)}">${formatSignedValue(profile.readout.budgetExecution)}</span></td>
+                  <td data-label="Velan kehitys"><span class="profile-delta ${getDeltaClass(profile.metrics.debt)}">${formatSignedValue(profile.metrics.debt)}</span></td>
+                  <td data-label="Talouskasvu"><span class="profile-delta ${getDeltaClass(profile.metrics.growth)}">${formatSignedValue(profile.metrics.growth)}</span></td>
+                  <td data-label="Hyvinvointi"><span class="profile-delta ${getDeltaClass(profile.metrics.wellbeing)}">${formatSignedValue(profile.metrics.wellbeing)}</span></td>
+                  <td data-label="Yrittäjien vapaus"><span class="profile-delta ${getDeltaClass(profile.metrics.freedom)}">${formatSignedValue(profile.metrics.freedom)}</span></td>
+                  <td data-label="Palvelut"><span class="profile-delta ${getDeltaClass(profile.readout.servicePressure)}">${formatSignedValue(profile.readout.servicePressure)}</span></td>
+                  <td data-label="Toteutuvuus"><span class="profile-delta ${getDeltaClass(profile.readout.budgetExecution)}">${formatSignedValue(profile.readout.budgetExecution)}</span></td>
                 </tr>
               `,
             )
@@ -2302,6 +3067,117 @@ function renderOpenModel() {
 
   openModelRoot.innerHTML = `
     <div class="open-model">
+      <section class="open-model-section">
+        <h4>Ennen budjettia: valtion rooli ja tärkeimmät tehtävät</h4>
+        <p class="tile-copy">
+          Ennen yhtätoista budjettikysymystä pelaaja tekee vielä perustavan poliittisen valinnan: mikä on valtion
+          rooli ja mitkä tehtävät ovat kaikkein tärkeimmät. Tämä ei ratkaise peliä automaattisesti, mutta se
+          muuttaa lähtötasoa ja sitä, miten myöhemmät budjettiratkaisut istuvat yhteen pelaajan oman linjan kanssa.
+        </p>
+
+        <div class="open-model-grid">
+          <article class="open-model-card">
+            <h5>Governance-vaiheen säännöt</h5>
+            <pre class="formula-block"><code>1. Valitse 1 rooli / 4
+2. Valitse 4 prioriteettia / 10
+3. Nosta näistä 2 tärkeimmäksi
+
+setupImpact = role.baseImpact + sum(priority.baseImpact * scale)
+scale = 1.0 jos prioriteetti on top-2
+scale = 0.65 jos prioriteetti on valittu mutta ei top-2
+
+alignmentWeights = role.supportWeights + sum(priority.supportWeights * scale)
+scale = 1.0 jos prioriteetti on top-2
+scale = 0.6 jos prioriteetti on valittu mutta ei top-2</code></pre>
+            <p class="tile-copy">
+              Top-2-prioriteetit siis kallistavat mallia voimakkaammin kuin kaksi muuta valittua tehtävää.
+            </p>
+          </article>
+
+          <article class="open-model-card">
+            <h5>Miten governance vaikuttaa pisteisiin ja toteutukseen</h5>
+            <pre class="formula-block"><code>governanceLiberalScore = role.hiddenLiberal + sum(selectedPriority.hiddenLiberal)
+hiddenLiberalScore = governanceLiberalScore + sum(choice.hiddenLiberal)
+
+when decision effect matches selected role/priorities:
+- roleClarity and priorityFit improve
+- budgetExecution and implementationCapacity improve
+
+when decision effect conflicts with selected role/priorities:
+- roleClarity and priorityFit weaken
+- reformPressure grows faster</code></pre>
+            <p class="tile-copy">
+              Top-2-prioriteetit eivät tuo erillistä lisäpistemäärää, mutta ne vahvistavat selvästi sitä, miten peli
+              arvioi valitsemasi budjettiratkaisujen johdonmukaisuutta.
+            </p>
+          </article>
+        </div>
+
+        <div class="open-model-grid">
+          <article class="open-model-card">
+            <h5>Valtion roolit</h5>
+            <div class="open-choice-list">
+              ${roleOptions
+                .map(
+                  (role) => `
+                    <section class="open-choice-card">
+                      <div class="open-choice-head">
+                        <h6>${role.title}</h6>
+                        <div class="open-choice-meta">
+                          <span class="open-model-chip">Liberaalipisteet ${role.hiddenLiberal}</span>
+                        </div>
+                      </div>
+                      <p class="tile-copy">${role.copy}</p>
+                      <div class="open-model-grid">
+                        <article class="open-effect-card">
+                          <span class="source-heading">Lähtövaikutus</span>
+                          ${renderHiddenEffectsList(role.baseImpact)}
+                        </article>
+                        <article class="open-effect-card">
+                          <span class="source-heading">Mitä tämä suosii</span>
+                          ${renderSupportWeightsList(role.supportWeights)}
+                        </article>
+                      </div>
+                    </section>
+                  `,
+                )
+                .join("")}
+            </div>
+          </article>
+
+          <article class="open-model-card">
+            <h5>10 mahdollista prioriteettia</h5>
+            <div class="open-choice-list">
+              ${priorityOptions
+                .map(
+                  (priority) => `
+                    <section class="open-choice-card">
+                      <div class="open-choice-head">
+                        <h6>${priority.title}</h6>
+                        <div class="open-choice-meta">
+                          <span class="open-model-chip">Liberaalipisteet ${priority.hiddenLiberal}</span>
+                        </div>
+                      </div>
+                      <p class="tile-copy">${priority.copy}</p>
+                      <div class="open-model-grid">
+                        <article class="open-effect-card">
+                          <span class="source-heading">Lähtövaikutus</span>
+                          ${renderHiddenEffectsList(priority.baseImpact)}
+                        </article>
+                        <article class="open-effect-card">
+                          <span class="source-heading">Mitä tämä painottaa</span>
+                          ${renderSupportWeightsList(priority.supportWeights)}
+                        </article>
+                      </div>
+                    </section>
+                  `,
+                )
+                .join("")}
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section class="open-model-section">
         <h4>Lähtöarvot</h4>
         <div class="open-model-grid">
@@ -2397,14 +3273,19 @@ modelReadout = deriveModelReadout(aggregateHidden)</code></pre>
           <article class="open-model-card">
             <h5>Liberaalipisteet</h5>
             <p class="tile-copy">
-              Jokaisella vaihtoehdolla on oma piilotettu liberaalipistemäärä. Lopussa ne summataan ja skaalataan
-              prosentiksi suhteessa kovimpaan mahdolliseen liberaaliin polkuun.
+              Jokaisella roolilla, jokaisella valitulla prioriteetilla ja jokaisella budjettivaihtoehdolla on oma
+              piilotettu liberaalipistemäärä. Lopussa ne summataan ja skaalataan prosentiksi suhteessa kovimpaan
+              mahdolliseen liberaaliin polkuun.
             </p>
-            <pre class="formula-block"><code>hiddenLiberalScore = sum(choice.hiddenLiberal)
+            <pre class="formula-block"><code>hiddenLiberalScore =
+  role.hiddenLiberal +
+  sum(selectedPriority.hiddenLiberal) +
+  sum(choice.hiddenLiberal)
 scorePercent = round((hiddenLiberalScore / ${maxLiberalScore}) * 100)</code></pre>
             <p class="tile-copy">
-              Tämän version maksimi on ${maxLiberalScore} pistettä, jos pelaaja valitsee jokaisesta kysymyksestä
-              suurimman liberaalipistemäärän tuottavan vaihtoehdon.
+              Tämän version maksimi on ${maxLiberalScore} pistettä, jos pelaaja valitsee yhden liberaaleimman roolin,
+              neljä eniten pisteitä tuottavaa prioriteettia ja jokaisesta kysymyksestä suurimman liberaalipistemäärän
+              tuottavan vaihtoehdon.
             </p>
           </article>
         </div>
@@ -2475,9 +3356,15 @@ postTermState uses pressureScale 3.4</code></pre>
                   <h5>${item.label}</h5>
                   <pre class="formula-block"><code>${item.formula}</code></pre>
                   <p class="tile-copy">
-                    Pelissä näkyvä arvo = nykyinen absoluuttinen luku - baseline ${formatExactValue(
-                      baselineReadoutLookup[item.id],
-                    )}.
+                    ${
+                      item.id === "servicePressure"
+                        ? `Pelissä näkyvä arvo = baseline ${formatExactValue(
+                            baselineReadoutLookup[item.id],
+                          )} - nykyinen absoluuttinen luku, jotta plussa tarkoittaa palvelujen paranemista.`
+                        : `Pelissä näkyvä arvo = nykyinen absoluuttinen luku - baseline ${formatExactValue(
+                            baselineReadoutLookup[item.id],
+                          )}.`
+                    }
                   </p>
                 </article>
               `,
@@ -2489,7 +3376,7 @@ postTermState uses pressureScale 3.4</code></pre>
       <section class="open-model-section">
         <h4>Kaikki päätösvaikutukset</h4>
         <p class="tile-copy">
-          Alla on jokaisen kysymyksen jokainen vaihtoehto täsmälleen niillä vaikutuksilla, joilla peli niitä laskee.
+          Alla on jokaisen ${decisions.length} kysymyksen jokainen vaihtoehto täsmälleen niillä vaikutuksilla, joilla peli niitä laskee.
           Tässä ne on avattu aikajänteittäin: mitä vaikutus tarkoittaa vuoden sisällä, vaalikaudella ja
           ylivaalikaudella.
         </p>
@@ -2608,18 +3495,190 @@ function getLiberalProfile(scorePercent) {
   };
 }
 
+function getPriorityTitle(priorityId) {
+  return getPriorityOption(priorityId)?.title ?? priorityId;
+}
+
+function renderSelectedPriorityList(priorityIds = []) {
+  if (!priorityIds.length) {
+    return `<p class="mini-note">Et ole vielä valinnut prioriteetteja.</p>`;
+  }
+
+  return `
+    <ul class="muted-list answer-list">
+      ${priorityIds.map((priorityId) => `<li><strong>${getPriorityTitle(priorityId)}</strong></li>`).join("")}
+    </ul>
+  `;
+}
+
+function renderGovernance() {
+  const governance = normaliseGovernance(state.governance);
+  state.governance = governance;
+
+  const governanceState = calculateState({}, governance);
+  const selectedRole = getRoleOption(governance.roleId);
+  const prioritiesComplete = governance.priorities.length === maxSelectedPriorities;
+  const topPrioritiesReady = governance.topPriorities.length === topPriorityCount;
+
+  app.innerHTML = `
+    <section class="screen screen-grid">
+      <div class="decision-panel">
+        <p class="section-kicker">Ennen budjettia</p>
+        <div class="decision-tag">Valtion rooli ja tärkeimmät tehtävät</div>
+        <h2 class="section-title">Millaisen valtion haluat rakentaa?</h2>
+        <p class="decision-copy">
+          Ennen kuin alat siirtää euroja, sinun täytyy päättää mitä valtion ylipäänsä kuuluu tehdä. Tämä valinta
+          vaikuttaa siihen, miten peli tulkitsee myöhempiä budjettiratkaisuja.
+        </p>
+        <p class="mini-note">
+          Valitse ensin valtion rooli. Sen jälkeen valitse neljä tärkeintä tehtävää kymmenestä ja nosta niistä vielä
+          kaksi kaikkein tärkeimmäksi.
+        </p>
+
+        <article class="source-card">
+          <strong class="source-heading">1. Valtion rooli</strong>
+          <p class="tile-copy">
+            Roolivalinta ei ole sama asia kuin budjetin koko. Se kertoo, tekeekö valtio itse paljon, takaako se
+            palvelut eri tuotantotavoilla vai keskittyykö se vahvemmin ytimeen ja mahdollistamiseen.
+          </p>
+          <div class="governance-grid">
+            ${roleOptions
+              .map(
+                (role) => `
+                  <button
+                    class="choice-button governance-button ${governance.roleId === role.id ? "selected" : ""}"
+                    data-action="select-role"
+                    data-role-id="${role.id}"
+                    aria-pressed="${governance.roleId === role.id ? "true" : "false"}"
+                  >
+                    <div class="choice-title-row">
+                      <strong>${role.title}</strong>
+                    </div>
+                    <p class="choice-copy">${role.copy}</p>
+                  </button>
+                `,
+              )
+              .join("")}
+          </div>
+        </article>
+
+        <article class="source-card">
+          <strong class="source-heading">2. Valitse 4 valtion tärkeintä tehtävää</strong>
+          <p class="tile-copy">
+            Tässä kohtaa et voi valita kaikkea. Juuri tämä priorisointi kertoo, mitä budjetti yrittää ennen kaikkea
+            suojata tai vahvistaa.
+          </p>
+          <div class="priority-grid">
+            ${priorityOptions
+              .map(
+                (priority) => `
+                  <button
+                    class="priority-button ${governance.priorities.includes(priority.id) ? "selected" : ""}"
+                    data-action="toggle-priority"
+                    data-priority-id="${priority.id}"
+                    aria-pressed="${governance.priorities.includes(priority.id) ? "true" : "false"}"
+                  >
+                    <strong>${priority.title}</strong>
+                    <span>${priority.copy}</span>
+                  </button>
+                `,
+              )
+              .join("")}
+          </div>
+          <p class="mini-note">Valittu ${governance.priorities.length} / ${maxSelectedPriorities}</p>
+        </article>
+
+        <article class="source-card ${prioritiesComplete ? "" : "source-card-muted"}">
+          <strong class="source-heading">3. Nosta 2 tärkeimmäksi</strong>
+          <p class="tile-copy">
+            Nämä kaksi tehtävää painavat eniten, kun peli arvioi sopivatko myöhemmät budjettiratkaisusi omaan
+            valitsemaasi valtion linjaan.
+          </p>
+          <div class="priority-grid priority-grid-compact">
+            ${governance.priorities
+              .map(
+                (priorityId) => `
+                  <button
+                    class="priority-button ${governance.topPriorities.includes(priorityId) ? "top-selected" : ""}"
+                    data-action="toggle-top-priority"
+                    data-priority-id="${priorityId}"
+                    aria-pressed="${governance.topPriorities.includes(priorityId) ? "true" : "false"}"
+                    ${prioritiesComplete ? "" : "disabled"}
+                  >
+                    <strong>${getPriorityTitle(priorityId)}</strong>
+                    <span>${governance.topPriorities.includes(priorityId) ? "Tärkein prioriteetti" : "Nosta tärkeimmäksi"}</span>
+                  </button>
+                `,
+              )
+              .join("")}
+          </div>
+          <p class="mini-note">Valittu ${governance.topPriorities.length} / ${topPriorityCount}</p>
+        </article>
+      </div>
+
+      <aside class="summary-panel">
+        <div class="stepper" aria-label="Pelin vaiheet">
+          <span class="step-dot active"></span>
+          <span class="step-dot active"></span>
+          <span class="step-dot active"></span>
+          <span class="step-dot"></span>
+        </div>
+
+        <div class="side-note">
+          <h3>Nykyinen valintasi</h3>
+          <p class="tile-copy">
+            ${selectedRole ? `Valtion rooli: <strong>${selectedRole.title}</strong>.` : "Et ole vielä valinnut valtion roolia."}
+          </p>
+          <p class="tile-copy">Valitut tehtävät:</p>
+          ${renderSelectedPriorityList(governance.priorities)}
+          <p class="tile-copy">Kaksi tärkeintä:</p>
+          ${renderSelectedPriorityList(governance.topPriorities)}
+        </div>
+
+        <div class="side-note">
+          <h3>Miten tämä vaikuttaa peliin?</h3>
+          <p class="tile-copy">
+            Valtion rooli ja prioriteetit eivät anna suoraan “oikeita vastauksia”, mutta ne muuttavat sitä, miten
+            uskottavasti myöhemmät budjettiratkaisut toteutuvat ja mitä hyvinvointi tässä mallissa tarkoittaa.
+          </p>
+        </div>
+
+        <div class="metric-grid metric-grid-compact">
+          ${metricCards(governanceState.metrics, { compact: true })}
+        </div>
+
+        ${renderModelReadout(governanceState.modelReadout)}
+
+        <div class="nav-row">
+          <button class="button" data-action="start-questions" ${isGovernanceComplete(governance) ? "" : "disabled"}>
+            Siirry päättämään
+          </button>
+          <button class="ghost-button" data-action="go-metrics">Takaisin</button>
+        </div>
+
+        <p class="mini-note">
+          ${isGovernanceComplete(governance)
+            ? "Pohjavalinnat ovat valmiit. Seuraavaksi alat rakentaa budjettia niiden päälle."
+            : "Et pääse budjettikysymyksiin ennen kuin valitset roolin, 4 tehtävää ja 2 tärkeintä prioriteettia."}
+        </p>
+      </aside>
+    </section>
+  `;
+}
+
 function renderHome() {
   app.innerHTML = `
     <section class="screen screen-grid">
       <div>
         <p class="hero-kicker">Suomi keväällä 2026</p>
-        <h2 class="hero-title">Rakenna Suomen budjetti kymmenellä päätöksellä.</h2>
+        <h2 class="hero-title">Rakenna Suomen budjetti <span class="hero-title-tail">11 päätöksellä.</span></h2>
         <p class="hero-copy">
           Tämä peli alkaa tilanteesta, jossa Suomi yrittää samaan aikaan hillitä velkaa, pitää palvelut pystyssä,
           vahvistaa kasvua ja vastata turvallisuusympäristön muutokseen.
         </p>
         <p class="section-copy">
-          Et aloita puolueen nimestä vaan valinnoista. Ensin näet tilannekatsauksen, sitten teet 10 päätöstä ja
+          Et aloita puolueen nimestä vaan valinnoista. Ensin näet tilannekatsauksen, sitten määrittelet valtion roolin
+          ja tärkeimmät tehtävät, teet 11 päätöstä ja
           lopuksi saat pisteet, mittarit ja analyysin siitä, mitä budjettisi tarkoittaisi oikeassa
           kansantaloudessa.
         </p>
@@ -2633,6 +3692,7 @@ function renderHome() {
           <span class="step-dot active"></span>
           <span class="step-dot"></span>
           <span class="step-dot"></span>
+          <span class="step-dot"></span>
         </div>
 
         <div class="hero-stats">
@@ -2641,12 +3701,12 @@ function renderHome() {
             <span>Näet ensin tiiviin kuvan Suomen velasta, palveluista, kasvusta ja turvallisuudesta.</span>
           </article>
           <article class="stat-pill">
-            <strong>2. Tee 10 päätöstä</strong>
-            <span>Verotus, sote, koulutus, turvallisuus ja aluepolitiikka ovat kaikki mukana samassa kierroksessa.</span>
+            <strong>2. Valitse valtion rooli</strong>
+            <span>Päätät ensin, mitä valtion kuuluu ensisijaisesti tehdä ja mitä tehtäviä se priorisoi.</span>
           </article>
           <article class="stat-pill">
-            <strong>3. Katso mittarit</strong>
-            <span>Lopussa näet, miten valintasi muuttivat velkaa, kasvua, hyvinvointia ja muita keskeisiä mittareita.</span>
+            <strong>3. Tee 11 päätöstä</strong>
+            <span>Verotus, sote, koulutus, tekoäly, turvallisuus ja aluepolitiikka ovat mukana samassa kierroksessa.</span>
           </article>
           <article class="stat-pill">
             <strong>4. Saat analyysin</strong>
@@ -2691,8 +3751,9 @@ function renderMetrics() {
         <article class="side-note">
           <h3>Näillä mittareilla peli arvioi budjettia</h3>
           <p class="tile-copy">
-            Kaikki mittarit alkavat arvosta 0, koska 0 tarkoittaa kevään 2026 lähtötilannetta. Kun myöhemmin teet
-            päätöksiä, plussa tarkoittaa lähtötilannetta parempaa suuntaa ja miinus heikompaa suuntaa.
+            Tilannekatsauksessa kaikki mittarit alkavat arvosta 0, koska 0 tarkoittaa kevään 2026 lähtötilannetta.
+            Seuraavassa vaiheessa valitset valtion roolin ja tärkeimmät tehtävät, jotka alkavat jo kallistaa tätä
+            lähtöasetelmaa ennen varsinaisia budjettipäätöksiä.
           </p>
           ${renderMetricLegend({ compact: true })}
         </article>
@@ -2706,6 +3767,7 @@ function renderMetrics() {
         <div class="stepper" aria-label="Pelin vaiheet">
           <span class="step-dot active"></span>
           <span class="step-dot active"></span>
+          <span class="step-dot"></span>
           <span class="step-dot"></span>
         </div>
 
@@ -2724,7 +3786,7 @@ function renderMetrics() {
         ${renderModelReadout(modelReadout)}
 
         <div class="nav-row">
-          <button class="button" data-action="start-questions">Siirry päättämään</button>
+          <button class="button" data-action="go-governance">Määritä valtion rooli</button>
           <button class="ghost-button" data-action="go-home">Takaisin</button>
         </div>
       </aside>
@@ -2822,8 +3884,8 @@ function renderDecision() {
           <button class="button" data-action="next-decision" ${selectedChoiceId ? "" : "disabled"}>
             ${isLastDecision ? "Näytä tulokseni" : "Seuraava kysymys"}
           </button>
-          <button class="ghost-button" data-action="${state.currentDecisionIndex === 0 ? "go-metrics" : "previous-decision"}">
-            ${state.currentDecisionIndex === 0 ? "Takaisin lähtötilanteeseen" : "Edellinen kysymys"}
+          <button class="ghost-button" data-action="${state.currentDecisionIndex === 0 ? "go-governance" : "previous-decision"}">
+            ${state.currentDecisionIndex === 0 ? "Takaisin valtion rooliin" : "Edellinen kysymys"}
           </button>
         </div>
       </aside>
@@ -2832,10 +3894,18 @@ function renderDecision() {
 }
 
 function renderFinal() {
-  const { hidden, metrics, modelReadout, timeline, hiddenLiberalScore, completedChoices } = calculateState();
+  const {
+    hidden,
+    metrics,
+    modelReadout,
+    timeline,
+    hiddenLiberalScore,
+    completedChoices,
+    governanceContext,
+  } = calculateState();
   const scorePercent = round((hiddenLiberalScore / maxLiberalScore) * 100);
   const profile = getLiberalProfile(scorePercent);
-  const analysis = getBudgetImpactAnalysis(metrics, modelReadout);
+  const analysis = getBudgetImpactAnalysis(metrics, modelReadout, governanceContext);
 
   const rankedMetrics = metricMeta
     .map((metric) => ({
@@ -2863,8 +3933,8 @@ function renderFinal() {
           <span class="score-label">Liberaalipisteesi</span>
           <strong class="score-value">${scorePercent} / 100</strong>
           <p class="tile-copy">
-            Piste kuvaa sitä, kuinka lähelle valintasi osuvat Liberaalipuolueen markkinaliberaalia ja ydinvaltiota
-            korostavaa kokonaislinjaa.
+            Piste kuvaa sitä, kuinka lähelle valtion rooli, tärkeimmät tehtävät ja budjettivalinnat yhdessä osuvat
+            Liberaalipuolueen markkinaliberaalia ja ydinvaltiota korostavaa kokonaislinjaa.
           </p>
         </div>
 
@@ -2903,6 +3973,10 @@ function renderFinal() {
             <p class="tile-copy">${analysis.societyAndServices}</p>
           </article>
           <article class="analysis-card">
+            <strong>Valtion tehtävät</strong>
+            <p class="tile-copy">${analysis.governanceCopy}</p>
+          </article>
+          <article class="analysis-card">
             <strong>Toteutettavuus</strong>
             <p class="tile-copy">${analysis.implementationCopy}</p>
           </article>
@@ -2934,6 +4008,15 @@ function renderFinal() {
           <h3>Eniten painetta jäi</h3>
           <ul class="muted-list">
             ${weakest.map((metric) => `<li>${metric.label}: ${formatSignedValue(metric.value)}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="side-note">
+          <h3>Valtion rooli ja tärkeimmät tehtävät</h3>
+          <ul class="muted-list">
+            <li>Valtion rooli: ${governanceContext.role?.title ?? "Ei valittu"}</li>
+            <li>4 tehtävää: ${governanceContext.priorities.map((priority) => priority.title).join(", ") || "Ei valittu"}</li>
+            <li>2 tärkeintä: ${governanceContext.selection.topPriorities.map((priorityId) => getPriorityTitle(priorityId)).join(", ") || "Ei valittu"}</li>
           </ul>
         </div>
 
@@ -2973,6 +4056,9 @@ function render() {
     case "metrics":
       renderMetrics();
       break;
+    case "governance":
+      renderGovernance();
+      break;
     case "decision":
       renderDecision();
       break;
@@ -3009,7 +4095,18 @@ app.addEventListener("click", (event) => {
     return;
   }
 
+  if (action === "go-governance") {
+    state.step = "governance";
+    render();
+    scrollToTop();
+    return;
+  }
+
   if (action === "start-questions") {
+    if (!isGovernanceComplete()) {
+      return;
+    }
+
     state.currentDecisionIndex =
       getAnsweredCount() === decisions.length ? 0 : getFirstUnansweredIndex();
     state.step = "decision";
@@ -3026,6 +4123,58 @@ app.addEventListener("click", (event) => {
     }
 
     state.answers[decision.id] = target.dataset.choiceId;
+    render();
+    return;
+  }
+
+  if (action === "select-role") {
+    state.governance = {
+      ...state.governance,
+      roleId: target.dataset.roleId,
+    };
+    render();
+    return;
+  }
+
+  if (action === "toggle-priority") {
+    const priorityId = target.dataset.priorityId;
+    const governance = normaliseGovernance(state.governance);
+    const selected = governance.priorities.includes(priorityId);
+    const priorities = selected
+      ? governance.priorities.filter((item) => item !== priorityId)
+      : governance.priorities.length < maxSelectedPriorities
+        ? [...governance.priorities, priorityId]
+        : governance.priorities;
+    const topPriorities = governance.topPriorities.filter((item) => priorities.includes(item));
+
+    state.governance = {
+      ...governance,
+      priorities,
+      topPriorities,
+    };
+    render();
+    return;
+  }
+
+  if (action === "toggle-top-priority") {
+    const priorityId = target.dataset.priorityId;
+    const governance = normaliseGovernance(state.governance);
+
+    if (!governance.priorities.includes(priorityId)) {
+      return;
+    }
+
+    const selected = governance.topPriorities.includes(priorityId);
+    const topPriorities = selected
+      ? governance.topPriorities.filter((item) => item !== priorityId)
+      : governance.topPriorities.length < topPriorityCount
+        ? [...governance.topPriorities, priorityId]
+        : governance.topPriorities;
+
+    state.governance = {
+      ...governance,
+      topPriorities,
+    };
     render();
     return;
   }
@@ -3070,6 +4219,7 @@ app.addEventListener("click", (event) => {
     state.step = "home";
     state.currentDecisionIndex = 0;
     state.answers = {};
+    state.governance = createEmptyGovernanceSelection();
     render();
     scrollToTop();
   }

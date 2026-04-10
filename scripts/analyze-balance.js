@@ -4,6 +4,9 @@ const {
   decisions,
   metricMeta,
   horizonMeta,
+  maxSelectedPriorities,
+  roleOptions,
+  priorityOptions,
   calculateState,
   maxLiberalScore,
 } = loadGameModel();
@@ -11,6 +14,11 @@ const {
 const metricKeys = metricMeta.map((metric) => metric.key);
 const sampleCount = Number.parseInt(process.env.BALANCE_SAMPLES ?? "12000", 10);
 const seed = Number.parseInt(process.env.BALANCE_SEED ?? "20260410", 10);
+const neutralGovernance = {
+  roleId: "steering-state",
+  priorities: ["fiscal-stability", "service-access", "education-science", "rule-of-law"],
+  topPriorities: ["fiscal-stability", "service-access"],
+};
 
 function mulberry32(initialSeed) {
   let state = initialSeed >>> 0;
@@ -64,7 +72,7 @@ function composite(metrics) {
 function runSingleDecisionAnalysis() {
   return decisions.map((decision) => {
     const choiceResults = decision.choices.map((choice) => {
-      const result = calculateState({ [decision.id]: choice.id });
+      const result = calculateState({ [decision.id]: choice.id }, neutralGovernance);
       return {
         choiceId: choice.id,
         title: choice.title,
@@ -125,7 +133,7 @@ function runMonteCarloAnalysis() {
       answers[decision.id] = choice.id;
     });
 
-    const result = calculateState(answers);
+    const result = calculateState(answers, neutralGovernance);
 
     decisions.forEach((decision) => {
       const key = `${decision.id}:${answers[decision.id]}`;
@@ -195,22 +203,46 @@ function printMonteCarloSection(monteCarloResults) {
 
 function printArchetypeSection() {
   const archetypes = {
-    "Varovainen suojelija": [3, 3, 3, 3, 3, 2, 1, 2, 2, 3],
-    "Tasainen kompromissi": [2, 2, 2, 2, 2, 1, 2, 2, 1, 2],
-    Reformisti: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    Velkajarru: [3, 1, 1, 1, 1, 3, 3, 3, 3, 1],
+    "Varovainen suojelija": {
+      pattern: [3, 3, 3, 3, 3, 2, 1, 2, 2, 2, 3],
+      governance: {
+        roleId: "producer-state",
+        priorities: ["social-floor", "service-access", "regional-vitality", "rule-of-law"],
+        topPriorities: ["social-floor", "service-access"],
+      },
+    },
+    "Tasainen kompromissi": {
+      pattern: [2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2],
+      governance: neutralGovernance,
+    },
+    Reformisti: {
+      pattern: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+      governance: {
+        roleId: "enabling-state",
+        priorities: ["fiscal-stability", "work-enterprise", "education-science", "individual-freedom"],
+        topPriorities: ["work-enterprise", "individual-freedom"],
+      },
+    },
+    Velkajarru: {
+      pattern: [3, 1, 1, 1, 1, 3, 3, 3, 3, 3, 1],
+      governance: {
+        roleId: "enabling-state",
+        priorities: ["fiscal-stability", "work-enterprise", "external-security", "rule-of-law"],
+        topPriorities: ["fiscal-stability", "work-enterprise"],
+      },
+    },
   };
 
   console.log("Arkkityyppien erot");
   console.log("==================");
 
-  Object.entries(archetypes).forEach(([name, pattern]) => {
+  Object.entries(archetypes).forEach(([name, archetype]) => {
     const answers = {};
     decisions.forEach((decision, index) => {
-      answers[decision.id] = decision.choices[pattern[index] - 1].id;
+      answers[decision.id] = decision.choices[archetype.pattern[index] - 1].id;
     });
 
-    const result = calculateState(answers);
+    const result = calculateState(answers, archetype.governance);
     const scorePercent = Math.round((result.hiddenLiberalScore / maxLiberalScore) * 100);
     const readout = toReadoutMap(result.modelReadout);
 
@@ -267,6 +299,10 @@ function printWarnings(singleDecisionResults, monteCarloResults) {
 const singleDecisionResults = runSingleDecisionAnalysis();
 const monteCarloResults = runMonteCarloAnalysis();
 
+console.log(
+  `Governance layer: ${roleOptions.length} roolia, ${priorityOptions.length} prioriteettia, valitse ${maxSelectedPriorities}`,
+);
+console.log("");
 printDecisionSection(singleDecisionResults);
 printMonteCarloSection(monteCarloResults);
 printArchetypeSection();

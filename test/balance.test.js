@@ -6,11 +6,21 @@ const { loadGameModel } = require("../scripts/load-game-model");
 const {
   decisions,
   metricMeta,
+  roleOptions,
+  priorityOptions,
+  maxSelectedPriorities,
+  topPriorityCount,
   maxLiberalScore,
   calculateState,
 } = loadGameModel();
 
 const metricKeys = metricMeta.map((metric) => metric.key);
+
+const neutralGovernance = {
+  roleId: "steering-state",
+  priorities: ["fiscal-stability", "service-access", "education-science", "rule-of-law"],
+  topPriorities: ["fiscal-stability", "service-access"],
+};
 
 function toReadoutMap(modelReadout) {
   return Object.fromEntries(modelReadout.map((item) => [item.id, item.value]));
@@ -41,16 +51,20 @@ function manhattanDistance(left, right) {
   return left.reduce((sum, value, index) => sum + Math.abs(value - right[index]), 0);
 }
 
-function archetype(pattern) {
+function archetype(pattern, governance = neutralGovernance) {
   const answers = {};
   decisions.forEach((decision, index) => {
     answers[decision.id] = decision.choices[pattern[index] - 1].id;
   });
-  return calculateState(answers);
+  return calculateState(answers, governance);
 }
 
-test("pelissä on 10 kysymystä ja jokaisessa 4 vaihtoehtoa", () => {
-  assert.equal(decisions.length, 10);
+test("pelissä on 11 kysymystä, 4 roolia ja 10 prioriteettia", () => {
+  assert.equal(decisions.length, 11);
+  assert.equal(roleOptions.length, 4);
+  assert.equal(priorityOptions.length, 10);
+  assert.equal(maxSelectedPriorities, 4);
+  assert.equal(topPriorityCount, 2);
   decisions.forEach((decision) => {
     assert.equal(
       decision.choices.length,
@@ -63,7 +77,7 @@ test("pelissä on 10 kysymystä ja jokaisessa 4 vaihtoehtoa", () => {
 test("jokaisen kysymyksen vaihtoehdot tuottavat uniikit lopputulokset", () => {
   decisions.forEach((decision) => {
     const fingerprints = decision.choices.map((choice) =>
-      outcomeFingerprint(calculateState({ [decision.id]: choice.id })),
+      outcomeFingerprint(calculateState({ [decision.id]: choice.id }, neutralGovernance)),
     );
     assert.equal(
       new Set(fingerprints).size,
@@ -76,7 +90,7 @@ test("jokaisen kysymyksen vaihtoehdot tuottavat uniikit lopputulokset", () => {
 test("jokaisessa kysymyksessä vaihtoehtojen väliin jää näkyvä vaikutusero", () => {
   decisions.forEach((decision) => {
     const vectors = decision.choices.map((choice) =>
-      metricVector(calculateState({ [decision.id]: choice.id })),
+      metricVector(calculateState({ [decision.id]: choice.id }, neutralGovernance)),
     );
     let minDistance = Number.POSITIVE_INFINITY;
 
@@ -96,7 +110,7 @@ test("jokaisessa kysymyksessä vaihtoehtojen väliin jää näkyvä vaikutusero"
 test("aikajänteet vaikuttavat oikeasti ainakin yhteen vaihtoehtoon joka kysymyksessä", () => {
   decisions.forEach((decision) => {
     const hasLaggedChoice = decision.choices.some((choice) => {
-      const result = calculateState({ [decision.id]: choice.id });
+      const result = calculateState({ [decision.id]: choice.id }, neutralGovernance);
       return metricKeys.some(
         (key) => result.timeline.year.metrics[key] !== result.timeline.postTerm.metrics[key],
       );
@@ -107,10 +121,22 @@ test("aikajänteet vaikuttavat oikeasti ainakin yhteen vaihtoehtoon joka kysymyk
 });
 
 test("erilaiset budjettiprofiilit erkanevat selvästi toisistaan", () => {
-  const cautious = archetype([3, 3, 3, 3, 3, 2, 1, 2, 2, 3]);
-  const compromise = archetype([2, 2, 2, 2, 2, 1, 2, 2, 1, 2]);
-  const reform = archetype([4, 4, 4, 4, 4, 4, 4, 4, 4, 4]);
-  const debtBrake = archetype([3, 1, 1, 1, 1, 3, 3, 3, 3, 1]);
+  const cautious = archetype([3, 3, 3, 3, 3, 2, 1, 2, 2, 2, 3], {
+    roleId: "producer-state",
+    priorities: ["social-floor", "service-access", "regional-vitality", "rule-of-law"],
+    topPriorities: ["social-floor", "service-access"],
+  });
+  const compromise = archetype([2, 2, 2, 2, 2, 1, 2, 2, 2, 1, 2], neutralGovernance);
+  const reform = archetype([4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], {
+    roleId: "enabling-state",
+    priorities: ["fiscal-stability", "work-enterprise", "education-science", "individual-freedom"],
+    topPriorities: ["work-enterprise", "individual-freedom"],
+  });
+  const debtBrake = archetype([3, 1, 1, 1, 1, 3, 3, 3, 3, 3, 1], {
+    roleId: "enabling-state",
+    priorities: ["fiscal-stability", "work-enterprise", "external-security", "rule-of-law"],
+    topPriorities: ["fiscal-stability", "work-enterprise"],
+  });
 
   const cautiousVector = metricVector(cautious);
   const compromiseVector = metricVector(compromise);

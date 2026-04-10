@@ -55,6 +55,10 @@ this.__exports = {
   metricMeta,
   horizonMeta,
   hiddenBase,
+  roleOptions,
+  priorityOptions,
+  maxSelectedPriorities,
+  topPriorityCount,
   decisions,
   maxLiberalScore,
   calculateState
