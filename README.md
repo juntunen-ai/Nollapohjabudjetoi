@@ -2,6 +2,10 @@
 
 Kevyt GitHub Pages -prototyyppi pelistä, jossa pelaaja rakentaa Suomen budjettia nopeiden poliittisten valintojen kautta.
 
+## Muistiot
+
+- [Anonyymi vastaustallennus AWS:ään](./docs/aws-anonyymi-vastaustallennus.md)
+
 ## Paikallinen käyttö
 
 Koska kyseessä on staattinen sivu, voit avata `index.html`:n suoraan selaimessa tai ajaa paikallisen palvelimen:
