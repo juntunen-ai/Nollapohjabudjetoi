@@ -1,0 +1,9 @@
+{
+  "name": "nollapohjabudjetoi",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "analyze:balance": "node scripts/analyze-balance.js"
+  }
+}
