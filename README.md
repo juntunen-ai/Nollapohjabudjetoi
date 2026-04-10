@@ -22,3 +22,30 @@ Sen jälkeen avaa `http://localhost:8000`.
 6. Tallenna.
 
 GitHub Pages julkaisee sivun suoraan tästä repositorion juuresta.
+
+## Balanssitestit
+
+Pelin logiikkaa voi tarkistaa ilman selainta suoraan Node-ajolla.
+
+```bash
+npm test
+```
+
+Tämä ajaa kovemmat regressiotestit:
+- pelissä on 10 kysymystä ja 4 vaihtoehtoa per kysymys
+- saman kysymyksen vaihtoehdot eivät johda samaan lopputulokseen
+- vaihtoehtojen välillä on oikea vaikutusero, ei vain kosmeettinen ero
+- aikajänteet `Vuosi`, `Vaalikausi` ja `Ylivaalikausi` eroavat aidosti
+- erilaiset budjettiprofiilit päätyvät selvästi eri lopputuloksiin
+
+Lisäksi voit ajaa laajemman balanssiraportin:
+
+```bash
+npm run analyze:balance
+```
+
+Raportti näyttää:
+- kysymyskohtaisen erottuvuuden
+- Monte Carlo -otoksen siitä, mitkä vaihtoehdot näyttävät keskimäärin vahvoilta
+- arkkityyppien erot
+- varoitukset, jos jokin vaihtoehto alkaa dominoida tai kaksi vaihtoehtoa ajautuu liian lähelle toisiaan

@@ -30,9 +30,9 @@ const executiveSummaryItems = [
 const metricMeta = [
   {
     key: "debt",
-    label: "Valtion velka",
+    label: "Velan kehitys",
     tone: "meter-debt",
-    description: "Kestääkö velkaura vai pakeneeko se päätöksenteon alta.",
+    description: "Kasvaako velka nopeammin vai saadaanko velkaantumisen suuntaa hillittyä.",
   },
   {
     key: "growth",
@@ -191,7 +191,7 @@ const structuralRealisationShares = {
 const visibleMetricFormulaMeta = [
   {
     key: "debt",
-    label: "Valtion velka",
+    label: "Velan kehitys",
     formula:
       "round(fiscalSpace * 0.5 + debtSustainability * 0.5 + budgetExecution * 0.1 - reformPressure * 0.15)",
   },
@@ -258,7 +258,7 @@ const modelReadoutFormulaMeta = [
   },
   {
     id: "servicePressure",
-    label: "Palvelupaine",
+    label: "Palvelut",
     formula: "clamp(round(100 - serviceCapacity))",
   },
 ];
@@ -400,20 +400,21 @@ const decisions = [
         copy:
           "Tämä on selvä rakenneuudistus: työn veroja kevennetään, poikkeuksia karsitaan ja veropohjaa levennetään. Siirtymä sattuu, mutta pitkän aikavälin vaikutus voi olla vahvin.",
         immediate: hiddenImpact({
-          fiscalSpace: -2,
-          debtSustainability: -1,
-          entrepreneurClimate: 6,
-          equity: -4,
-          budgetExecution: -3,
-          implementationCapacity: -1,
+          fiscalSpace: -3,
+          debtSustainability: -2,
+          entrepreneurClimate: 5,
+          equity: -5,
+          serviceCapacity: -1,
+          budgetExecution: -4,
+          implementationCapacity: -2,
         }),
         structural: hiddenImpact({
-          fiscalSpace: 4,
-          debtSustainability: 5,
-          growthPotential: 10,
-          entrepreneurClimate: 8,
-          regionalVitality: 3,
-          equity: -1,
+          fiscalSpace: 2,
+          debtSustainability: 3,
+          growthPotential: 8,
+          entrepreneurClimate: 6,
+          regionalVitality: 2,
+          equity: -2,
         }),
         reformLoad: 5,
         hiddenLiberal: 22,
@@ -1065,16 +1066,17 @@ const decisions = [
         immediate: hiddenImpact({
           fiscalSpace: -2,
           debtSustainability: -1,
-          budgetExecution: -3,
-          implementationCapacity: -2,
+          budgetExecution: -2,
+          implementationCapacity: -1,
           internalSecurityCapacity: 1,
           justiceCapacity: 1,
         }),
         structural: hiddenImpact({
           internalSecurityCapacity: 5,
-          justiceCapacity: 9,
-          fiscalSpace: 2,
-          debtSustainability: 2,
+          justiceCapacity: 8,
+          fiscalSpace: 3,
+          debtSustainability: 3,
+          entrepreneurClimate: 1,
         }),
         reformLoad: 5,
         hiddenLiberal: 13,
@@ -1123,22 +1125,21 @@ const decisions = [
         copy:
           "Tämä on liberaalimpi rakenteellinen linja: poliisin aikaa vapautetaan vakavampiin tehtäviin ja prosesseja suoristetaan. Poliittinen vastareaktio voi olla silti kova.",
         immediate: hiddenImpact({
-          fiscalSpace: 1,
-          debtSustainability: 1,
-          internalSecurityCapacity: -1,
-          justiceCapacity: 0,
-          entrepreneurClimate: 2,
-          equity: 1,
-          budgetExecution: -4,
-          implementationCapacity: -2,
+          fiscalSpace: 0,
+          debtSustainability: 0,
+          internalSecurityCapacity: -2,
+          justiceCapacity: -1,
+          entrepreneurClimate: 1,
+          equity: -1,
+          budgetExecution: -5,
+          implementationCapacity: -3,
         }),
         structural: hiddenImpact({
-          fiscalSpace: 4,
-          debtSustainability: 4,
-          internalSecurityCapacity: 4,
-          justiceCapacity: 10,
-          entrepreneurClimate: 3,
-          serviceCapacity: 1,
+          fiscalSpace: 2,
+          debtSustainability: 2,
+          internalSecurityCapacity: 3,
+          justiceCapacity: 7,
+          entrepreneurClimate: 2,
         }),
         reformLoad: 5,
         hiddenLiberal: 20,
@@ -1398,6 +1399,12 @@ function setActiveView(nextView, options = {}) {
   }
 }
 
+function scrollToTop(behavior = "smooth") {
+  if (typeof window?.scrollTo === "function") {
+    window.scrollTo({ top: 0, behavior });
+  }
+}
+
 function applyEffectSet(hidden, deltas, baseFactor, executionFactor, implementationFactor) {
   for (const key of hiddenKeys) {
     const delta = deltas[key] ?? 0;
@@ -1529,12 +1536,12 @@ function deriveAbsoluteModelReadout(hidden) {
       value: clamp(round(hidden.implementationCapacity - hidden.reformPressure + 50)),
       description: "Mitä enemmän vaikeita reformeja päällekkäin, sitä enemmän osa hyödyistä viivästyy tai haihtuu.",
     },
-    {
-      id: "servicePressure",
-      label: "Palvelupaine",
-      value: clamp(round(100 - hidden.serviceCapacity)),
-      description: "Ikääntyminen, henkilöstöpula ja jonot syövät tilaa jokaisen kierroksen taustalla.",
-    },
+  {
+    id: "servicePressure",
+    label: "Palvelut",
+    value: clamp(round(100 - hidden.serviceCapacity)),
+    description: "Yksinkertaistettu palvelujen suunta: paranevatko palvelut vai heikkenevätkö ne lähtötilanteeseen verrattuna.",
+  },
   ];
 }
 
@@ -1555,7 +1562,10 @@ function deriveModelReadout(hidden) {
 
   return absoluteReadout.map((item, index) => ({
     ...item,
-    value: round(item.value - baselineAbsoluteModelReadout[index].value),
+    value:
+      item.id === "servicePressure"
+        ? round(baselineAbsoluteModelReadout[index].value - item.value)
+        : round(item.value - baselineAbsoluteModelReadout[index].value),
   }));
 }
 
@@ -1690,27 +1700,17 @@ function getDeltaClass(value) {
   return "delta-neutral";
 }
 
-function getSemanticDeltaClass(value, invert = false) {
-  return getDeltaClass(invert ? -value : value);
-}
-
-function getMeterFill(value, limit, options = {}) {
-  const { invertTone = false } = options;
+function getMeterFill(value, limit) {
   const width = clamp((Math.abs(value) / limit) * 50, 0, 50);
   const left = value >= 0 ? 50 : 50 - width;
-  const semanticValue = invertTone ? -value : value;
   const tone =
-    semanticValue > 0
+    value > 0
       ? "meter-fill-positive"
-      : semanticValue < 0
+      : value < 0
         ? "meter-fill-negative"
         : "meter-fill-neutral";
 
   return `<span class="meter-fill ${tone}" style="left: ${left}%; width: ${width}%"></span>`;
-}
-
-function isReadoutInverted(itemId) {
-  return itemId === "servicePressure";
 }
 
 function getReadoutMeaning(item) {
@@ -1756,23 +1756,23 @@ function getReadoutMeaning(item) {
     return "Uudistusvaraa on poikkeuksellisen paljon. Uusia muutoksia mahtuisi vielä mukaan ilman suurta ylikuormaa.";
   }
 
-  if (value <= -10) {
-    return "Palveluihin kohdistuu selvästi vähemmän painetta kuin lähtötilanteessa. Jonot, henkilöstökuorma ja saatavuus näyttävät helpottuvan.";
+  if (value >= 10) {
+    return "Palvelut paranisivat selvästi lähtötilanteeseen verrattuna. Jonot, henkilöstökuorma ja saatavuus näyttäisivät helpottuvan.";
   }
 
-  if (value <= -3) {
-    return "Palveluihin kohdistuu hieman vähemmän painetta kuin lähtötilanteessa.";
+  if (value >= 3) {
+    return "Palvelut paranisivat hieman lähtötilanteeseen verrattuna.";
   }
 
-  if (value < 3) {
-    return "Palvelupaine on käytännössä lähtötilanteen tasolla.";
+  if (value > -3) {
+    return "Palvelut pysyisivät käytännössä lähtötilanteen tasolla.";
   }
 
-  if (value < 10) {
-    return "Palveluihin kohdistuu hieman enemmän painetta kuin lähtötilanteessa. Tämä voi näkyä jonossa, saatavuudessa tai arjen kitkana.";
+  if (value > -10) {
+    return "Palvelut heikkenisivät hieman lähtötilanteeseen verrattuna. Tämä voisi näkyä jonossa, saatavuudessa tai arjen kitkana.";
   }
 
-  return "Palveluihin kohdistuu selvästi enemmän painetta kuin lähtötilanteessa. Riski näkyville heikennyksille kasvaa.";
+  return "Palvelut heikkenisivät selvästi lähtötilanteeseen verrattuna. Riski näkyville heikennyksille kasvaa.";
 }
 
 function getReadoutValue(readout, id) {
@@ -1782,22 +1782,22 @@ function getReadoutValue(readout, id) {
 function getOutcomeMeaning(metricKey, value) {
   if (metricKey === "debt") {
     if (value >= 10) {
-      return "Velkaura paranee selvästi. Budjettisi hillitsee velkapainetta lähtötilannetta paremmin.";
+      return "Velan kasvu hidastuu selvästi. Budjettisi hillitsee velkaantumista lähtötilannetta paremmin.";
     }
 
     if (value >= 3) {
-      return "Velkaura paranee hieman. Velkapaine on lähtötilannetta hallitumpi.";
+      return "Velan kasvu hidastuu hieman. Velkaantuminen on lähtötilannetta hallitumpaa.";
     }
 
     if (value > -3) {
-      return "Velkaura pysyy lähellä lähtötilannetta. Budjetti ei juuri muuta velkakeskustelun perusasetelmaa.";
+      return "Velan kehitys pysyy lähellä lähtötilannetta. Budjetti ei juuri muuta velkakeskustelun perusasetelmaa.";
     }
 
     if (value > -10) {
-      return "Velkapaine kasvaa hieman. Ratkaisusi nojaavat enemmän menojen tai veronkevennysten riskiin kuin velan hillintään.";
+      return "Velka kasvaa hieman lähtötilannetta nopeammin. Ratkaisusi nojaavat enemmän menojen tai veronkevennysten riskiin kuin velan hillintään.";
     }
 
-    return "Velkapaine kasvaa selvästi. Budjettisi tekee valtion velkaurasta lähtötilannetta vaikeamman.";
+    return "Velka kasvaa selvästi lähtötilannetta nopeammin. Budjettisi tekee julkisen talouden suunnasta vaikeamman.";
   }
 
   if (metricKey === "growth") {
@@ -1831,7 +1831,7 @@ function getBudgetImpactAnalysis(metrics, modelReadout) {
   let publicFinance;
   if (metrics.debt >= 10) {
     publicFinance =
-      "Julkinen talous vakautuisi selvästi lähtötilannetta paremmin. Budjettisi hillitsee velkapainetta tavalla, joka antaisi valtiolle enemmän liikkumatilaa myöhempiin kriiseihin ja investointeihin.";
+      "Julkinen talous vakautuisi selvästi lähtötilannetta paremmin. Budjettisi hidastaa velan kasvua tavalla, joka antaisi valtiolle enemmän liikkumatilaa myöhempiin kriiseihin ja investointeihin.";
   } else if (metrics.debt >= 3) {
     publicFinance =
       "Julkinen talous paranisi jonkin verran. Velkaura olisi hallitumpi kuin kevään 2026 perusuralla, mutta kovin suurta puskuria ei vielä syntyisi.";
@@ -1843,7 +1843,7 @@ function getBudgetImpactAnalysis(metrics, modelReadout) {
       "Julkinen talous heikkenisi hieman. Velkapaine jäisi lähtötilannetta suuremmaksi, mikä pakottaisi todennäköisesti myöhempiin lisäsopeutuksiin.";
   } else {
     publicFinance =
-      "Julkinen talous heikkenisi selvästi. Budjettisi kasvattaisi velkapainetta niin paljon, että markkinoiden, hallituksen ja virkamiesten katse kääntyisi nopeasti uusiin korjaustoimiin.";
+      "Julkinen talous heikkenisi selvästi. Budjettisi kasvattaisi velkaa niin paljon, että markkinoiden, hallituksen ja virkamiesten katse kääntyisi nopeasti uusiin korjaustoimiin.";
   }
 
   let growthAndEnterprise;
@@ -1865,10 +1865,10 @@ function getBudgetImpactAnalysis(metrics, modelReadout) {
   }
 
   let societyAndServices;
-  if (metrics.wellbeing >= 3 && servicePressure <= 0) {
+  if (metrics.wellbeing >= 3 && servicePressure >= 0) {
     societyAndServices =
       "Kotitalouksien ja palvelujen näkökulmasta kokonaisuus olisi suhteellisen vakaa. Hyvinvointi ei perustu vain rahaan, mutta tässä budjetissa arjen paine ei näyttäisi pahenevan olennaisesti.";
-  } else if (metrics.wellbeing <= -3 && servicePressure >= 3) {
+  } else if (metrics.wellbeing <= -3 && servicePressure <= -3) {
     societyAndServices =
       "Palvelujen ja arjen näkökulmasta budjetti olisi kova. Jonot, henkilöstöpaine, ostovoiman kiristyminen tai alueellinen eriytyminen voisivat näkyä tavallisen kansalaisen arjessa melko nopeasti.";
   } else {
@@ -1893,7 +1893,7 @@ function getBudgetImpactAnalysis(metrics, modelReadout) {
   } else {
     macroTitle = "Jos tämä budjetti toteutuisi oikeasti";
     macroCopy =
-      "Kansantaloudellisesti tämä olisi vaikea yhdistelmä. Budjetti ei parantaisi riittävästi velkauraa eikä kasvun edellytyksiä, joten seuraava hallitus joutuisi todennäköisesti korjaamaan samaa pakettia uudelleen.";
+      "Kansantaloudellisesti tämä olisi vaikea yhdistelmä. Budjetti ei hidastaisi velan kasvua riittävästi eikä parantaisi kasvun edellytyksiä, joten seuraava hallitus joutuisi todennäköisesti korjaamaan samaa pakettia uudelleen.";
   }
 
   let implementationCopy;
@@ -1927,10 +1927,10 @@ function getHorizonSummary(horizonId, metrics, modelReadout) {
 
   if (horizonId === "year") {
     if (metrics.debt >= 3 && metrics.wellbeing >= 0) {
-      return "Ensimmäinen vuosi näyttäisi suhteellisen hallitulta: velkapaine ei karkaa ja arjen hyvinvointi pysyy ainakin kohtuullisena.";
+      return "Ensimmäinen vuosi näyttäisi suhteellisen hallitulta: velka ei kasvaisi hallitsemattomasti ja arjen hyvinvointi pysyisi ainakin kohtuullisena.";
     }
 
-    if (metrics.debt < 0 && servicePressure > 0) {
+    if (metrics.debt < 0 && servicePressure < 0) {
       return "Ensimmäisen vuoden kuva olisi kireä: sekä julkinen talous että palvelujen paine näyttäisivät vaikeilta heti.";
     }
 
@@ -1954,7 +1954,7 @@ function getHorizonSummary(horizonId, metrics, modelReadout) {
   }
 
   if (metrics.growth < 0 && metrics.debt < 0) {
-    return "Ylivaalikaudella budjetin ongelmat kasaantuisivat: ilman vahvempaa kasvua myös velkapaine jäisi pitkäksi aikaa korkeaksi.";
+    return "Ylivaalikaudella budjetin ongelmat kasaantuisivat: ilman vahvempaa kasvua myös velka jäisi pitkäksi aikaa nopeaan nousuun.";
   }
 
   return "Ylivaalikaudella ratkaisevaa olisi, kääntyvätkö rakenteelliset uudistukset oikeasti kasvuksi, vai jäävätkö vaikutukset puolitiehen.";
@@ -1976,10 +1976,10 @@ function renderTimelineCards(timeline) {
               </div>
               <p class="tile-copy">${horizon.description}</p>
               <div class="timeline-kpis">
-                <span class="delta-pill ${getDeltaClass(snapshot.metrics.debt)}">Velka ${formatSignedValue(snapshot.metrics.debt)}</span>
+                <span class="delta-pill ${getDeltaClass(snapshot.metrics.debt)}">Velan kehitys ${formatSignedValue(snapshot.metrics.debt)}</span>
                 <span class="delta-pill ${getDeltaClass(snapshot.metrics.growth)}">Kasvu ${formatSignedValue(snapshot.metrics.growth)}</span>
                 <span class="delta-pill ${getDeltaClass(snapshot.metrics.wellbeing)}">Hyvinvointi ${formatSignedValue(snapshot.metrics.wellbeing)}</span>
-                <span class="delta-pill ${getSemanticDeltaClass(servicePressure, true)}">Palvelupaine ${formatSignedValue(servicePressure)}</span>
+                <span class="delta-pill ${getDeltaClass(servicePressure)}">Palvelut ${formatSignedValue(servicePressure)}</span>
               </div>
               <p class="timeline-copy">${getHorizonSummary(horizon.id, snapshot.metrics, snapshot.modelReadout)}</p>
             </article>
@@ -1993,30 +1993,30 @@ function renderTimelineCards(timeline) {
 function getChoiceKeyImpactCopy(metricKey, value) {
   if (metricKey === "debt") {
     if (value > 0) {
-      return "keventää velkapainetta";
+      return "hidastaa velan kasvua tässä paketissa";
     }
 
     if (value < 0) {
-      return "lisää velkapainetta";
+      return "kiihdyttää velan kasvua tässä paketissa";
     }
 
-    return "ei juuri muuta velkauraa";
+    return "ei juuri muuta velan kehitystä tässä paketissa";
   }
 
   if (value > 0) {
-    return "vahvistaa kasvua";
+    return "vahvistaa kasvua tässä paketissa";
   }
 
   if (value < 0) {
-    return "heikentää kasvua";
+    return "heikentää kasvua tässä paketissa";
   }
 
-  return "ei juuri muuta kasvua";
+  return "ei juuri muuta kasvunäkymää tässä paketissa";
 }
 
 function renderChoiceKeyImpacts(beforeMetrics, afterMetrics) {
   const keyMetrics = [
-    { key: "debt", label: "Valtion velka" },
+    { key: "debt", label: "Velan kehitys" },
     { key: "growth", label: "Talouskasvu" },
   ];
 
@@ -2029,8 +2029,10 @@ function renderChoiceKeyImpacts(beforeMetrics, afterMetrics) {
 
           return `
             <article class="key-impact-card ${semanticClass}">
-              <span class="key-impact-label">${metric.label}</span>
-              <strong>${formatSignedValue(value)}</strong>
+              <div class="key-impact-head">
+                <span class="key-impact-label">${metric.label}</span>
+                <strong>${formatSignedValue(value)}</strong>
+              </div>
               <span class="key-impact-copy">${getChoiceKeyImpactCopy(metric.key, value)}</span>
             </article>
           `;
@@ -2045,10 +2047,10 @@ function renderMetricLegend(options = {}) {
 
   return `
     <p class="legend-note ${compact ? "legend-note-compact" : ""}">
-      Kaikki luvut ovat muutoksia lähtötilanteeseen. <strong>Valtion velka</strong>:
-      plussa tarkoittaa parempaa velkauraa, miinus enemmän velkapainetta.
-      <strong>Talouskasvu</strong>: plussa tarkoittaa vahvempaa kasvunäkymää.
-      <strong>Palvelupaine</strong>: plussa tarkoittaa enemmän painetta, miinus vähemmän.
+      Kaikki luvut ovat muutoksia lähtötilanteeseen. <strong>Plussa on aina hyvä, miinus huono.</strong>
+      <strong>Velan kehitys</strong>: plussa tarkoittaa, että velan kasvu hidastuu. <strong>Talouskasvu</strong>:
+      plussa tarkoittaa vahvempaa kasvunäkymää. <strong>Palvelut</strong>: plussa tarkoittaa, että palvelut
+      paranevat, miinus että palvelut heikkenevät.
     </p>
   `;
 }
@@ -2133,9 +2135,9 @@ function renderModelReadout(readout) {
           (item) => `
             <article class="system-card">
               <strong>${item.label}</strong>
-              <span class="system-value ${getSemanticDeltaClass(item.value, isReadoutInverted(item.id))}">${formatSignedValue(item.value)}</span>
+              <span class="system-value ${getDeltaClass(item.value)}">${formatSignedValue(item.value)}</span>
               <div class="meter meter-system">
-                ${getMeterFill(item.value, visibleReadoutLimit, { invertTone: isReadoutInverted(item.id) })}
+                ${getMeterFill(item.value, visibleReadoutLimit)}
               </div>
               <p class="tile-copy">${item.description}</p>
               <p class="system-meaning"><strong>Mitä tämä tarkoittaa:</strong> ${getReadoutMeaning(item)}</p>
@@ -2172,6 +2174,115 @@ function renderBackgroundPressureList() {
         )
         .join("")}
     </ul>
+  `;
+}
+
+function getPlayerProfileShowcase() {
+  const profileExamples = [
+    {
+      range: "0-24 / 100",
+      pattern: [3, 3, 3, 3, 3, 2, 1, 2, 2, 3],
+      angle:
+        "Suojaa nykyisiä rakenteita ja palveluja enemmän kuin hakee kasvua tai laajaa markkinareformia.",
+    },
+    {
+      range: "25-44 / 100",
+      pattern: [2, 2, 2, 2, 2, 1, 2, 2, 1, 2],
+      angle:
+        "Tekee korjauksia useaan kohtaan, mutta varoo liian kovaa yhtäaikaista reformiaaltoa.",
+    },
+    {
+      range: "45-69 / 100",
+      pattern: [3, 2, 4, 4, 3, 2, 4, 1, 1, 1],
+      angle:
+        "Painottaa kasvua, veropohjan remonttia ja yritysmyönteisiä muutoksia, mutta rakenteelliset uudistukset jäävät hieman vaisuiksi.",
+    },
+    {
+      range: "70-100 / 100",
+      pattern: [4, 2, 2, 4, 2, 1, 4, 1, 4, 4],
+      angle:
+        "Nojaa vahvasti rakenteellisiin uudistuksiin, työn ja yrittämisen kannusteisiin sekä valtion roolin karsimiseen.",
+    },
+  ];
+
+  return profileExamples.map((example) => {
+    const answers = {};
+    decisions.forEach((decision, index) => {
+      answers[decision.id] = decision.choices[example.pattern[index] - 1].id;
+    });
+
+    const result = calculateState(answers);
+    const scorePercent = round((result.hiddenLiberalScore / maxLiberalScore) * 100);
+    const profile = getLiberalProfile(scorePercent);
+    const readout = Object.fromEntries(result.modelReadout.map((item) => [item.id, item.value]));
+
+    return {
+      ...example,
+      scorePercent,
+      title: profile.title,
+      copy: profile.copy,
+      metrics: result.metrics,
+      readout,
+    };
+  });
+}
+
+function renderPlayerProfiles() {
+  const root = document.querySelector("#player-profiles");
+
+  if (!root) {
+    return;
+  }
+
+  const profiles = getPlayerProfileShowcase();
+
+  root.innerHTML = `
+    <div class="profile-table-wrap">
+      <table class="profile-table">
+        <thead>
+          <tr>
+            <th>Profiili</th>
+            <th>Pistealue</th>
+            <th>Kuvaus</th>
+            <th>Velan kehitys</th>
+            <th>Talouskasvu</th>
+            <th>Hyvinvointi</th>
+            <th>Yrittäjien vapaus</th>
+            <th>Palvelut</th>
+            <th>Toteutuvuus</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${profiles
+            .map(
+              (profile) => `
+                <tr>
+                  <td>
+                    <strong>${profile.title}</strong>
+                    <span class="profile-subline">Esimerkkitulos ${profile.scorePercent} / 100</span>
+                  </td>
+                  <td><span class="profile-range">${profile.range}</span></td>
+                  <td>
+                    <p class="profile-copy">${profile.copy}</p>
+                    <p class="profile-copy profile-copy-muted">${profile.angle}</p>
+                  </td>
+                  <td><span class="profile-delta ${getDeltaClass(profile.metrics.debt)}">${formatSignedValue(profile.metrics.debt)}</span></td>
+                  <td><span class="profile-delta ${getDeltaClass(profile.metrics.growth)}">${formatSignedValue(profile.metrics.growth)}</span></td>
+                  <td><span class="profile-delta ${getDeltaClass(profile.metrics.wellbeing)}">${formatSignedValue(profile.metrics.wellbeing)}</span></td>
+                  <td><span class="profile-delta ${getDeltaClass(profile.metrics.freedom)}">${formatSignedValue(profile.metrics.freedom)}</span></td>
+                  <td><span class="profile-delta ${getDeltaClass(profile.readout.servicePressure)}">${formatSignedValue(profile.readout.servicePressure)}</span></td>
+                  <td><span class="profile-delta ${getDeltaClass(profile.readout.budgetExecution)}">${formatSignedValue(profile.readout.budgetExecution)}</span></td>
+                </tr>
+              `,
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </div>
+    <p class="mini-note">
+      Taulukon luvut ovat edustavia esimerkkibudjetteja tämän version laskentamallista, eivät ainoita mahdollisia
+      lopputuloksia kullekin pistehaarukalle.
+    </p>
   `;
 }
 
@@ -2478,7 +2589,7 @@ function getLiberalProfile(scorePercent) {
     return {
       title: "Uudistava tasapainottaja",
       copy:
-        "Rakennat markkinaehtoisempaa Suomea, mutta jätät julkiselle vallalle myös vahvan korjaavan roolin. Tulos on liberaali, mutta ei puhdasoppinen.",
+        "Rakennat markkinaehtoisempaa Suomea, mutta jätät julkiselle vallalle myös vahvan korjaavan roolin. Tulos on liberaalin politiikan suuntainen.",
     };
   }
 
@@ -2527,7 +2638,7 @@ function renderHome() {
         <div class="hero-stats">
           <article class="stat-pill">
             <strong>1. Tilannekatsaus</strong>
-            <span>Näet ensin tiiviin kuvan Suomen velasta, palvelupaineesta, kasvusta ja turvallisuudesta.</span>
+            <span>Näet ensin tiiviin kuvan Suomen velasta, palveluista, kasvusta ja turvallisuudesta.</span>
           </article>
           <article class="stat-pill">
             <strong>2. Tee 10 päätöstä</strong>
@@ -2561,7 +2672,7 @@ function renderMetrics() {
         <h2 class="section-title">Tilannekatsaus</h2>
         <p class="section-copy">
           Suomen ongelma ei ole vain yksi menokohta tai yksi vero. Keväällä 2026 samaan aikaan kiristyvät julkinen
-          talous, palvelupaine, heikko kasvu ja turvallisuusmenot. Tätä kokonaisuutta vasten peli lukee valintasi.
+          talous, palvelujen tilanne, heikko kasvu ja turvallisuusmenot. Tätä kokonaisuutta vasten peli lukee valintasi.
         </p>
 
         <div class="analysis-grid">
@@ -2602,7 +2713,7 @@ function renderMetrics() {
           <h3>Mitä mittarien alla tapahtuu?</h3>
           <p class="tile-copy">
             Jokaisella päätöksellä on välitön ja viivästetty vaikutus. Lisäksi taustalla kulkevat
-            budjetin toteutuvuus, uudistusvara ja palvelupaine, joten kaikki säästöt tai hyödyt eivät näy heti.
+            budjetin toteutuvuus, uudistusvara ja palvelujen suunta, joten kaikki säästöt tai hyödyt eivät näy heti.
           </p>
           <p class="tile-copy">
             Peli laskee jokaisen vastauksen kolmella aikajänteellä: vuosi, vaalikausi ja ylivaalikausi. Näkyvä
@@ -2666,6 +2777,7 @@ function renderDecision() {
                   class="choice-button ${selectedChoiceId === choice.id ? "selected" : ""}"
                   data-action="select-choice"
                   data-choice-id="${choice.id}"
+                  aria-pressed="${selectedChoiceId === choice.id ? "true" : "false"}"
                 >
                   <div class="choice-title-row">
                     <strong>${choice.title}</strong>
@@ -2744,7 +2856,7 @@ function renderFinal() {
         <h2 class="section-title">${profile.title}</h2>
         <p class="section-copy">
           ${profile.copy} Lopputulos arvioitiin Suomi keväällä 2026 -lähtötilannetta vasten, jossa velka,
-          palvelupaine, osaajapula ja turvallisuusmenot kehittyvät myös ilman uusia poliittisia päätöksiä.
+          palvelujen tilanne, osaajapula ja turvallisuusmenot kehittyvät myös ilman uusia poliittisia päätöksiä.
         </p>
 
         <div class="result-banner score-banner">
@@ -2768,7 +2880,7 @@ function renderFinal() {
 
         <div class="key-outcome-grid">
           <article class="key-outcome-card ${getDeltaClass(metrics.debt)}">
-            <span class="key-outcome-label">Koontitulos: valtion velka ${formatSignedValue(metrics.debt)}</span>
+            <span class="key-outcome-label">Koontitulos: velan kehitys ${formatSignedValue(metrics.debt)}</span>
             <p class="tile-copy">${debtMeaning}</p>
           </article>
           <article class="key-outcome-card ${getDeltaClass(metrics.growth)}">
@@ -2886,12 +2998,14 @@ app.addEventListener("click", (event) => {
   if (action === "go-home") {
     state.step = "home";
     render();
+    scrollToTop();
     return;
   }
 
   if (action === "go-metrics") {
     state.step = "metrics";
     render();
+    scrollToTop();
     return;
   }
 
@@ -2900,6 +3014,7 @@ app.addEventListener("click", (event) => {
       getAnsweredCount() === decisions.length ? 0 : getFirstUnansweredIndex();
     state.step = "decision";
     render();
+    scrollToTop();
     return;
   }
 
@@ -2925,11 +3040,13 @@ app.addEventListener("click", (event) => {
     if (state.currentDecisionIndex === decisions.length - 1) {
       state.step = "final";
       render();
+      scrollToTop();
       return;
     }
 
     state.currentDecisionIndex += 1;
     render();
+    scrollToTop();
     return;
   }
 
@@ -2937,6 +3054,7 @@ app.addEventListener("click", (event) => {
     state.currentDecisionIndex = Math.max(0, state.currentDecisionIndex - 1);
     state.step = "decision";
     render();
+    scrollToTop();
     return;
   }
 
@@ -2944,6 +3062,7 @@ app.addEventListener("click", (event) => {
     state.currentDecisionIndex = 0;
     state.step = "decision";
     render();
+    scrollToTop();
     return;
   }
 
@@ -2952,6 +3071,7 @@ app.addEventListener("click", (event) => {
     state.currentDecisionIndex = 0;
     state.answers = {};
     render();
+    scrollToTop();
   }
 });
 
@@ -2969,6 +3089,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+renderPlayerProfiles();
 renderOpenModel();
 setActiveView("game");
 render();
